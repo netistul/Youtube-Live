@@ -4,44 +4,57 @@ document.addEventListener("DOMContentLoaded", function () {
   const showSearchButton = document.getElementById("showSearch");
   const backButton = document.getElementById("backButton");
 
-  // Load live channels list
-  chrome.storage.local.get(
-    ["liveChannels", "yt_live_channels_id"],
-    function (result) {
-      const liveChannels = result.liveChannels || {};
-      const storedChannels = result.yt_live_channels_id || [];
+  // Function to refresh the live channels list
+  function refreshLiveChannels() {
+    chrome.storage.local.get(
+      ["liveChannels", "yt_live_channels_id"],
+      function (result) {
+        const liveChannels = result.liveChannels || {};
+        const storedChannels = result.yt_live_channels_id || [];
 
-      statusDiv.innerHTML = "";
+        statusDiv.innerHTML = "";
 
-      storedChannels.forEach(([channelId, channelName, logoUrl]) => {
-        const channelDiv = document.createElement("div");
-        channelDiv.className = "channel-info";
+        storedChannels.forEach(([channelId, channelName, logoUrl]) => {
+          const channelDiv = document.createElement("div");
+          channelDiv.className = "channel-info";
 
-        const logo = document.createElement("img");
-        logo.src = logoUrl;
-        logo.alt = `${channelName} Logo`;
-        logo.className = "channel-logo";
+          const logo = document.createElement("img");
+          logo.src = logoUrl;
+          logo.alt = `${channelName} Logo`;
+          logo.className = "channel-logo";
 
-        const name = document.createElement("span");
-        name.textContent = channelName;
-        name.className = "channel-name";
+          const name = document.createElement("span");
+          name.textContent = channelName;
+          name.className = "channel-name";
 
-        const liveStatus = document.createElement("span");
-        liveStatus.textContent = liveChannels[channelName]
-          ? "Live"
-          : "Not Live";
-        liveStatus.className = liveChannels[channelName]
-          ? "live-status live"
-          : "live-status not-live";
+          const liveStatus = document.createElement("span");
+          liveStatus.textContent = liveChannels[channelName]
+            ? "Live"
+            : "Not Live";
+          liveStatus.className = liveChannels[channelName]
+            ? "live-status live"
+            : "live-status not-live";
 
-        channelDiv.appendChild(logo);
-        channelDiv.appendChild(name);
-        channelDiv.appendChild(liveStatus);
+          channelDiv.appendChild(logo);
+          channelDiv.appendChild(name);
+          channelDiv.appendChild(liveStatus);
 
-        statusDiv.appendChild(channelDiv);
-      });
+          statusDiv.appendChild(channelDiv);
+        });
+      }
+    );
+  }
+
+  // Initial call to load live channels list
+  refreshLiveChannels();
+
+  // messages from background.js
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === "checkComplete") {
+      // Refresh the content or popup
+      refreshLiveChannels(); // Call this function to refresh the display
     }
-  );
+  });
 
   // Show search section and hide live channels list
   showSearchButton.addEventListener("click", function () {
@@ -129,6 +142,14 @@ document.addEventListener("DOMContentLoaded", function () {
       channels.push([channelId, channelName, logoUrl]);
       chrome.storage.local.set({ yt_live_channels_id: channels }, function () {
         console.log(`Channel ${channelName} added to live check list.`);
+        refreshLiveChannels(); // Refresh the list after adding a channel
+
+        // Redirect back to the main menu (live channels list)
+        searchSection.style.display = "none";
+        statusDiv.style.display = "block";
+
+        // Send a message to background.js to check all channels after a delay
+          chrome.runtime.sendMessage({ action: "checkAllChannels", fromPopup: true });  
       });
     });
   }
