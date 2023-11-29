@@ -1,0 +1,112 @@
+/* Style for the YouTube-like header */
+.header {
+    display: flex;
+    justify-content: center; /* Centered horizontally */
+    align-items: center;
+    background-color: #ff00007a; /* YouTube's iconic red */
+    color: white;
+    padding: 10px 0; /* Add some padding */
+    font-size: 20px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold; /* Make the font bold */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.096); /* Subtle shadow for depth */
+    width: 100%; /* Ensure it takes full width */
+    margin: 0; /* Remove any default margin */
+}
+
+/* General body styling for consistency */
+body {
+    font-family: "Open Sans", Arial, sans-serif;
+    margin: 0; /* Removes default margin */
+    padding: 0; /* Removes default padding */
+    min-width: 400px;
+    overflow: hidden; /* Hide overflow */
+}
+
+.channel-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.channel-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    margin-right: 10px;
+}
+
+.channel-name {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.live-status {
+    color: #555;
+}
+
+.live-status.live {
+    color: green;
+}
+
+.live-status.not-live {
+    color: red;
+}
+
+
+
+/* Style for the plus button */
+#showSearch {
+    margin-right: 10px;
+    cursor: pointer;
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    font-size: 16px;
+    line-height: 25px;
+    text-align: center;
+}
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.search-result-channel-logo {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+    border-radius: 50%;
+}
+
+.search-result-item h3 {
+    margin: 0;
+    padding: 0;
+}
+
+
+/* Style for the search section */
+#searchSection {
+    /* Add your styles here */
+}
+
+/* Style for the back button */
+#backButton {
+    cursor: pointer;
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    font-size: 16px;
+    line-height: 25px;
+    text-align: center;
+    margin-bottom: 10px; /* Spacing from the search content */
+}
