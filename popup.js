@@ -294,7 +294,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function performSearch(endpoint) {
-    var timeInSeconds = 10;
+    var timeInSeconds = 15;
     updateStatusMessage(
       "Sending request to API endpoint, about " +
         timeInSeconds +

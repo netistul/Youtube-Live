@@ -257,17 +257,34 @@ div {
   right: 10px;
   width: 40px; /* Adjust to the size of your image */
   height: auto;
-  padding: 0; /* Remove padding to fit the image correctly */
+  padding: 0;
+  transition: background-color 0.3s ease;
+}
+
+#showSearch:hover img {
+  opacity: 0.8; /* Example of changing the opacity */
+  filter: brightness(220%); /* Example of making the image brighter */
 }
 
 #backButton:hover {
-  background-color: #2d2d2db6; /* Background color change on hover */
+  background-color: #8b21211a; /* Background color change on hover */
+  border-radius: 5px
+}
+
+#backButton:hover img {
+  opacity: 0.1; /* Example of changing the opacity */
+  filter: brightness(120%); /* Example of making the image brighter */
 }
 
 #showSearch img {
   display: block; /* Ensures the image fills the button */
   width: 100%; /* Full width of the button */
   height: 100%; /* Full height of the button */
+}
+
+#showSearch:hover {
+  background-color: #2d2d2d36;
+  border-radius: 5px
 }
 
 #backButton {
@@ -278,8 +295,8 @@ div {
   top: 10px;
   left: 10px;
   z-index: 1010;
-  width: 50px; /* Adjust to the size of your image */
-  height: 50px; /* Adjust to the size of your image */
+  width: 40px; /* Adjust to the size of your image */
+  height: 40px; /* Adjust to the size of your image */
   background-color: transparent; /* Optional, for a transparent background */
 }
 
@@ -289,29 +306,32 @@ div {
   height: 100%; /* Full height of the button */
 }
 
-#showSearch:hover {
-  background-color: #2d2d2db6;
-}
-
-/* Styling for each search result item */
 .search-result-item {
   display: flex;
-  align-items: center; /* Align items to the center */
-  justify-content: space-between; /* Distribute space between elements */
+  align-items: center;
+  justify-content: space-between; /* This will keep the add button aligned to the right */
   padding: 10px;
-  border-bottom: 1px solid #303030; /* Optional: adds a line between items */
+  border-bottom: 1px solid #303030;
 }
 
 /* Container for the channel logo and info */
 .info-button-container {
   display: flex;
-  align-items: center; /* Align items to the center */
-  flex-grow: 1;
+  align-items: center;
+  flex-grow: 1; /* Allow this container to grow and use available space */
+  margin-right: 20px; /* Space between info and add button */
+}
+
+/* Container grouping the logo, name, and description */
+.channel-info-container {
+  display: flex;
+  align-items: center;
+  margin-right: 20px; /* Fixed margin to ensure consistent spacing from the add button */
 }
 
 /* Container for the channel logo */
 .logo-container {
-  margin-right: 20px; /* Space between logo and text */
+  margin-right: 10px; /* Fixed space between logo and text */
 }
 
 /* Styling for the channel logo */
@@ -324,8 +344,8 @@ div {
 /* Container for channel info (name and description) */
 .info-container {
   display: flex;
-  flex-direction: column; /* Stack items vertically */
-  flex-grow: 1; /* Allow it to take available space */
+  flex-direction: column;
+  flex-shrink: 0; /* Prevent shrinking */
 }
 
 /* Styling for the channel title */
@@ -338,9 +358,6 @@ div {
 .channel-description {
   font-size: 0.9em; /* Adjust size as needed */
   color: #666; /* Lighter text color */
-  white-space: nowrap; /* Prevent line breaks */
-  overflow: hidden; /* Hide overflow */
-  text-overflow: ellipsis; /* Add ellipsis for overflow */
 }
 
 /* Styling for the add channel button */
@@ -364,7 +381,7 @@ div {
   font-size: 18px; /* Adjust the font size as needed */
   text-align: center; /* Center align the text */
   margin-top: 20px; /* Add some top margin for spacing */
-  color: #ffffff; /* White text color for dark theme */
+  color: #ffffffb7; /* White text color for dark theme */
 }
 
 /* Apply a subtle shadow to the text for depth */
@@ -374,7 +391,7 @@ div {
 
 /* Add a dark background color */
 #addChannelText {
-  background-color: #202020; /* Dark background color */
+  background-color: #20202024; /* Dark background color */
   padding: 10px; /* Add padding for better visual separation */
   border-radius: 5px; /* Rounded corners */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
