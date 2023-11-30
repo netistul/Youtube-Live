@@ -72,7 +72,7 @@ body {
 }
 
 .live-status.not-live {
-    color: red;
+    color: rgb(161, 46, 46);
 }
 
 
@@ -187,34 +187,50 @@ body, div {
 }
 
 
-#showSearch, #backButton {
-  background-color: #282424a8;
-  color: white;
+#showSearch {
+  background-color: transparent; /* Makes the button background transparent */
   border: none;
-  padding: 5px 10px;
-  border-radius: 2px;
   cursor: pointer;
   position: absolute;
-  top: 10px;
+  top: 4px;
   right: 10px;
-  margin-right: 10px;
+  width: 40px; /* Adjust to the size of your image */
+  height: 40px; /* Adjust to the size of your image */
+  padding: 0; /* Remove padding to fit the image correctly */
+}
+
+#backButton:hover {
+  background-color: #2d2d2db6; /* Background color change on hover */
+}
+
+#showSearch img {
+  display: block; /* Ensures the image fills the button */
+  width: 100%; /* Full width of the button */
+  height: 100%; /* Full height of the button */
 }
 
 #backButton {
-  position: absolute;
-  top: 10px; /* Adjust as needed */
-  left: 10px; /* Adjust as needed */
-  z-index: 1010; /* Higher than the header to ensure visibility */
-  background-color: #303030;
-  color: white;
   border: none;
-  padding: 5px 10px;
-  border-radius: 2px;
+  padding: 0; /* Remove padding to fit the image correctly */
   cursor: pointer;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1010;
+  width: 50px; /* Adjust to the size of your image */
+  height: 50px; /* Adjust to the size of your image */
+  background-color: transparent; /* Optional, for a transparent background */
 }
 
-#showSearch:hover, #backButton:hover {
-  background-color: #3a3a3a;
+#backButton img {
+  display: block; /* Ensures the image fills the button */
+  width: 100%; /* Full width of the button */
+  height: 100%; /* Full height of the button */
+}
+
+
+#showSearch:hover {
+  background-color: #2d2d2db6;
 }
 
 /* Styling for each search result item */
