@@ -25,9 +25,14 @@ document.addEventListener("DOMContentLoaded", function () {
         storedChannels.forEach(([channelId, channelName, logoUrl]) => {
           const channelDiv = document.createElement("div");
           channelDiv.className = "channel-info";
+          channelDiv.classList.add(
+            liveChannels[channelName] ? "live" : "not-live"
+          );
           channelDiv.style.cursor = "pointer"; // Change cursor to pointer on hover
-          channelDiv.addEventListener("click", function() {
-            chrome.tabs.create({ url: `https://www.youtube.com/channel/${channelId}/live` });
+          channelDiv.addEventListener("click", function () {
+            chrome.tabs.create({
+              url: `https://www.youtube.com/channel/${channelId}/live`,
+            });
           });
 
           const logo = document.createElement("img");
@@ -56,12 +61,11 @@ document.addEventListener("DOMContentLoaded", function () {
             channelDiv.classList.remove("hovered");
           });
 
-  channelDiv.appendChild(logo);
-  channelDiv.appendChild(name);
-  channelDiv.appendChild(liveStatus);
+          channelDiv.appendChild(logo);
+          channelDiv.appendChild(name);
+          channelDiv.appendChild(liveStatus);
 
-  statusDiv.appendChild(channelDiv);
-
+          statusDiv.appendChild(channelDiv);
         });
       }
     );
@@ -135,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   function searchYouTubeChannels(query) {
-    updateStatusMessage("Starting search for channels...")
+    updateStatusMessage("Starting search for channels...");
     // Clear existing search results when a new search starts
     const searchResults = document.getElementById("searchResults");
     searchResults.innerHTML = "";
@@ -146,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (isValidYouTubeUrl(query)) {
       const { type, id } = extractYouTubeId(query);
-      updateStatusMessage(`Extracted YouTube ID: ${id}, Type: ${type}`);
+      updateStatusMessage(`Extracting YouTube ID: ${id} to get channel name`);
 
       console.log("Extracted YouTube ID:", id, "Type:", type); // Log the extracted ID and type
 
@@ -183,6 +187,7 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log("No valid endpoint constructed."); // Log when no valid endpoint is constructed
       loadingSpinner.style.display = "none"; // Hide the loading spinner
     }
+    updateStatusMessage("");
   }
 
   function isLikelyCustomName(id) {
@@ -231,14 +236,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function performSearch(endpoint) {
     var timeInSeconds = 10; // Set the countdown time
-    updateStatusMessage("Sending request to API endpoint, about " + timeInSeconds + " seconds remaining...");
-    startCountdown(timeInSeconds, document.getElementById('statusMessage'));
+    updateStatusMessage(
+      "Sending request to API endpoint, about " +
+        timeInSeconds +
+        " seconds remaining..."
+    );
+    startCountdown(timeInSeconds, document.getElementById("statusMessage"));
     fetch(endpoint)
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Network response was not ok: ' + response.statusText);
+          throw new Error(
+            "Network response was not ok: " + response.statusText
+          );
         }
         return response.json();
+        updateStatusMessage("");
       })
       .then((data) => {
         clearInterval(countdownInterval);
@@ -249,19 +261,22 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch((error) => {
         console.error("Error fetching search results:", error);
-        if (error.message.includes('Failed to fetch')) {
+        if (error.message.includes("Failed to fetch")) {
           // Handle failed to fetch error
           clearInterval(countdownInterval);
-          updateStatusMessage("Failed to fetch data. This could be due to network issues or API endpoint timeout. Please try again.");
+          updateStatusMessage(
+            "Failed to fetch data. This could be due to network issues or API endpoint timeout. Please try again."
+          );
         } else {
           // Handle other types of errors
           clearInterval(countdownInterval);
-          updateStatusMessage("An error occurred while fetching search results: " + error.message);
+          updateStatusMessage(
+            "An error occurred while fetching search results: " + error.message
+          );
         }
         loadingSpinner.style.display = "none"; // Hide the spinner
       });
-}
-
+  }
 
   // Event listener for the search button click
   searchButton.addEventListener("click", function () {
@@ -391,18 +406,18 @@ document.addEventListener("DOMContentLoaded", function () {
       searchResults.appendChild(noResultsMsg);
     }
     // Clear the status message
-    updateStatusMessage(""); 
+    updateStatusMessage("");
   }
 
   function updateStatusMessage(message) {
     let statusDiv = document.getElementById("statusMessage");
-  
+
     if (!statusDiv) {
       // Create the status div if it doesn't exist
       statusDiv = document.createElement("div");
       statusDiv.id = "statusMessage";
       statusDiv.style = "color: grey; margin-bottom: 10px;"; // Add your styling here
-  
+
       // Assuming you have a spinner with the ID 'loadingSpinner'
       const spinner = document.getElementById("loadingSpinner");
       if (spinner) {
@@ -413,7 +428,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.body.insertBefore(statusDiv, document.body.firstChild);
       }
     }
-  
+
     // Update the text content of the statusDiv
     statusDiv.textContent = message;
   }
@@ -421,16 +436,19 @@ document.addEventListener("DOMContentLoaded", function () {
   var countdownInterval;
 
   function startCountdown(duration, display) {
-      var timer = duration;
-      countdownInterval = setInterval(function () {
-          var seconds = parseInt(timer % 60, 10);
-          display.textContent = "Sending request to API endpoint, about " + seconds + " seconds remaining...";
-  
-          if (--timer < 0) {
-              clearInterval(countdownInterval);
-              display.textContent = "Processing response..."; // or you can clear it
-          }
-      }, 1000);
+    var timer = duration;
+    countdownInterval = setInterval(function () {
+      var seconds = parseInt(timer % 60, 10);
+      display.textContent =
+        "Sending request to API endpoint, about " +
+        seconds +
+        " seconds remaining...";
+
+      if (--timer < 0) {
+        clearInterval(countdownInterval);
+        display.textContent = "";
+      }
+    }, 1000);
   }
 
   // Function to add channel to local storage
@@ -456,4 +474,3 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
-

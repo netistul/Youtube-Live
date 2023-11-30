@@ -43,7 +43,7 @@ body {
   min-width: 348px;
   overflow: hidden;
 }
-
+/* Base styles for channel info */
 .channel-info {
   display: flex;
   align-items: center;
@@ -51,46 +51,75 @@ body {
   margin-top: 2px;
   justify-content: space-between;
   font-size: 14px;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, opacity 0.3s ease; /* Add opacity transition */
   border-radius: 12px;
-  padding: 4px;
+  padding: 10px;
   border-bottom: 0.1px solid #e0e0e009;
 }
 
-.channel-info:hover {
-  background-color: #272727; /* Change to the desired background color */
-  cursor: pointer; /* Change to the desired cursor style */
+/* Faded effect for not-live channels */
+.channel-info.not-live {
+  transition: opacity 0.3s ease;
+    opacity: 0.3; /* Apply reduced opacity */
+    transition: opacity 0.3s ease; /* Smooth transition for the opacity change */
 }
+
+.channel-info.not-live:hover {
+  opacity: 1; /* Full opacity on hover */
+}
+
+/* Restore full opacity on hover for any channel */
+.channel-info:hover {
+  transition: opacity 0.9s ease;
+    opacity: 1; /* Full opacity on hover */
+    background-color: #272727; /* Change to the desired background color */
+}
+
+/* Additional styles */
 
 .channel-logo {
   width: 25px;
   height: 25px;
-  border-radius: 20px;
   margin-right: 5px;
-  margin-top: 5px;
+  border-radius: 20px;
+  flex-shrink: 0;
 }
-
 .channel-name {
+  max-width: 60%; /* Example value, adjust as needed */
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 100px; /* Space before the "+" button */
   font-family: "Roboto", "Arial", sans-serif;
-  margin-right: 42px;
   font-size: 15px;
   flex-grow: 1;
 }
 
+.channel-logo, .channel-name {
+  flex-shrink: 1;
+}
+
+
 .live-status {
-  margin-left: 130px;
   color: #555;
 }
 
 .live-status.live {
-  margin-left: 130px;
   color: green;
 }
 
-.live-status.not-live {
-  margin-left: 130px;
-  color: rgb(161, 46, 46);
+/* Hover styles for the entire channel info */
+.channel-info:hover {
+  background-color: #272727; /* Change to the desired background color */
+  cursor: pointer; /* Change to the desired cursor style */
+  opacity: 1; /* Ensure full opacity on hover */
 }
+
+.channel-logo, .live-status {
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
 
 /* Reset margins and paddings for body and div elements */
 body,
@@ -268,11 +297,6 @@ div {
   margin-right: 10px;
 }
 
-.channel-name {
-  flex-grow: 1; /* Allows the channel name to take up available space */
-  margin-right: 10px; /* Space before the "+" button */
-}
-
 /* AddChannelText Styling for Dark Theme */
 #addChannelText {
   font-size: 18px; /* Adjust the font size as needed */
@@ -318,7 +342,7 @@ div {
 #statusMessage {
   background-color: rgb(86, 1, 7); /* PowerShell background color */
   color: #ffffff; /* Text color */
-  font-family: 'Consolas', 'Courier New', monospace; /* Monospace font for console appearance */
+  font-family: "Consolas", "Courier New", monospace; /* Monospace font for console appearance */
   padding: 10px;
   border-radius: 4px;
   margin-top: 10px; /* Adjust based on your layout */
@@ -334,7 +358,6 @@ div {
 #statusMessage:empty {
   display: none;
 }
-
 
 @font-face {
   font-family: "Roboto";
