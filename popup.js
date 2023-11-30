@@ -12,6 +12,14 @@ document.addEventListener("DOMContentLoaded", function () {
         const liveChannels = result.liveChannels || {};
         const storedChannels = result.yt_live_channels_id || [];
 
+        // Sort channels based on live status
+        storedChannels.sort((a, b) => {
+          const isLiveA = liveChannels[a[1]];
+          const isLiveB = liveChannels[b[1]];
+          // Sort in descending order so that "Live" comes before "Not Live"
+          return isLiveB - isLiveA;
+        });
+
         statusDiv.innerHTML = "";
 
         storedChannels.forEach(([channelId, channelName, logoUrl]) => {
@@ -56,17 +64,21 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Show search section and hide live channels list
+
+  // Show search section, hide live channels list and the showSearch button
   showSearchButton.addEventListener("click", function () {
     statusDiv.style.display = "none";
     searchSection.style.display = "block";
+    showSearchButton.style.display = "none"; // Hide the showSearch button
   });
 
-  // Back to live channels list
+  // Back to live channels list and show the showSearch button again
   backButton.addEventListener("click", function () {
     searchSection.style.display = "none";
     statusDiv.style.display = "block";
+    showSearchButton.style.display = "block"; // Show the showSearch button
   });
+
   const searchInput = document.getElementById("searchInput");
   const searchButton = document.getElementById("searchButton");
   const searchResults = document.getElementById("searchResults");
@@ -112,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function searchYouTubeChannels(query) {
     // Clear existing search results when a new search starts
     const searchResults = document.getElementById("searchResults");
-    searchResults.innerHTML = '';
+    searchResults.innerHTML = "";
     let endpoint;
     const maxResults = 5; // Set the number of results per page
 
@@ -379,6 +391,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Redirect back to the main menu (live channels list)
         searchSection.style.display = "none";
         statusDiv.style.display = "block";
+        showSearchButton.style.display = "block";
 
         // Send a message to background.js to check all channels after a delay
         chrome.runtime.sendMessage({

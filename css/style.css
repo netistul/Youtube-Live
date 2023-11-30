@@ -6,7 +6,7 @@
   color: rgba(70, 54, 54, 0);
   text-align: center;
   font-size: 18px;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto","Arial",sans-serif;
   font-weight: bold;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 100%;
@@ -39,9 +39,9 @@ body {
   margin: 0;
   padding: 0;
   background-color: #181818;
-  color: #fff;
-  font-family: 'Roboto', sans-serif;
-  min-width: 400px;
+  color: #d5d5d5;
+  font-family: "Roboto","Arial",sans-serif;
+  min-width: 348px;
   overflow: hidden;
 }
 
@@ -49,18 +49,22 @@ body {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
+    margin-top: 5px;
+    font-size: 14px;
 }
 
 .channel-logo {
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     border-radius: 20px;
-    margin-right: 10px;
+    margin-right: 5px;
+    margin-top: 5px;
 }
 
 .channel-name {
-    margin-right: 10px;
-    font-weight: bold;
+  font-family: "Roboto","Arial",sans-serif;
+    margin-right: 22px;
+    font-size: 15px;
 }
 
 .live-status {
@@ -110,14 +114,15 @@ body, div {
 
 /* Styling for the search input */
 #searchInput {
+  font-family: "Roboto","Arial",sans-serif;
   flex-grow: 1; /* Allow the input to grow */
-  padding: 10px 15px; /* Adjust padding */
+  padding: 20px 15px; /* Adjust padding */
   border: none; /* Remove individual border */
   background-color: #261f20c7 !important;
   color: white;
   border-top-left-radius: 22px; /* Add border radius to the top-left corner */
   border-bottom-left-radius: 22px; /* Add border radius to the bottom-left corner */
-  font-size: 13px;
+  font-size: 11.4px;
 }
 
 #searchInput:focus {
@@ -129,7 +134,7 @@ body, div {
 #searchButton {
   position: relative;
   padding: 10px; /* Adjust the padding to ensure button size */
-  background-color: #261f20;
+  background-color: rgba(62, 54, 55, 0.439);
   border: none;
   cursor: pointer;
   display: flex;
@@ -145,8 +150,8 @@ body, div {
 }
 
 #searchButton img {
-  max-width: 24px; /* Set the desired width of the image */
-  max-height: 24px; /* Set the desired height of the image */
+  max-width: 35px; /* Set the desired width of the image */
+  max-height: auto; /* Set the desired height of the image */
   height: auto; /* Maintain aspect ratio */
   width: auto; /* Maintain aspect ratio */
 }
@@ -159,7 +164,7 @@ body, div {
   border-radius: 4px; /* Rounded corners */
   text-align: center;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
-  font-family: 'Roboto', sans-serif; /* YouTube-like font */
+  font-family: "Roboto","Arial",sans-serif;
   font-size: 14px;
 }
 
@@ -171,7 +176,7 @@ body, div {
   border-radius: 4px; /* Rounded corners */
   text-align: center;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
-  font-family: 'Roboto', sans-serif; /* YouTube-like font */
+  font-family: "Roboto","Arial",sans-serif;
   font-size: 13px;
 }
 
@@ -195,7 +200,7 @@ body, div {
   top: 4px;
   right: 10px;
   width: 40px; /* Adjust to the size of your image */
-  height: 40px; /* Adjust to the size of your image */
+  height: auto;
   padding: 0; /* Remove padding to fit the image correctly */
 }
 
@@ -293,6 +298,14 @@ body, div {
   height: 1px;
   background-color: #404040; /* Light gray border color for dark theme */
   margin-top: 10px; /* Space between text and border */
+}
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('../css/Roboto-Regular.woff2') format('woff2'),
+       url('../css/Roboto-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
 }
 
 
