@@ -135,6 +135,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   function searchYouTubeChannels(query) {
+    updateStatusMessage("Starting search for channels...")
     // Clear existing search results when a new search starts
     const searchResults = document.getElementById("searchResults");
     searchResults.innerHTML = "";
@@ -145,6 +146,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (isValidYouTubeUrl(query)) {
       const { type, id } = extractYouTubeId(query);
+      updateStatusMessage(`Extracted YouTube ID: ${id}, Type: ${type}`);
 
       console.log("Extracted YouTube ID:", id, "Type:", type); // Log the extracted ID and type
 
@@ -162,6 +164,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
           // Use channels endpoint for direct channel ID
           endpoint = `https://yt.lemnoslife.com/noKey/channels?id=${id}&part=snippet,contentDetails,statistics&maxResults=${maxResults}`;
+          updateStatusMessage("Constructed API endpoint for text search.");
         }
       }
     } else {
@@ -176,6 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (endpoint) {
       performSearch(endpoint);
     } else {
+      updateStatusMessage("No valid endpoint constructed.");
       console.log("No valid endpoint constructed."); // Log when no valid endpoint is constructed
       loadingSpinner.style.display = "none"; // Hide the loading spinner
     }
@@ -226,32 +230,38 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function performSearch(endpoint) {
+    var timeInSeconds = 10; // Set the countdown time
+    updateStatusMessage("Sending request to API endpoint, about " + timeInSeconds + " seconds remaining...");
+    startCountdown(timeInSeconds, document.getElementById('statusMessage'));
     fetch(endpoint)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok: ' + response.statusText);
+        }
+        return response.json();
+      })
       .then((data) => {
+        clearInterval(countdownInterval);
+        updateStatusMessage("Displaying search results...");
         console.log("API Response:", data); // Log the response data
         displaySearchResults(data);
         loadingSpinner.style.display = "none"; // Hide the loading spinner when results are ready
       })
       .catch((error) => {
         console.error("Error fetching search results:", error);
-        displayErrorMessage(
-          "An error occurred while fetching search results. Please try again later."
-        );
-        loadingSpinner.style.display = "none"; // Hide the spinner
-
-        // Provide a more descriptive error message to the user
-        if (error.message === "Failed to fetch") {
-          alert(
-            "Failed to fetch data. Please check your internet connection and try again."
-          );
+        if (error.message.includes('Failed to fetch')) {
+          // Handle failed to fetch error
+          clearInterval(countdownInterval);
+          updateStatusMessage("Failed to fetch data. This could be due to network issues or API endpoint timeout. Please try again.");
         } else {
-          alert(
-            "An error occurred while fetching search results. Please try again later."
-          );
+          // Handle other types of errors
+          clearInterval(countdownInterval);
+          updateStatusMessage("An error occurred while fetching search results: " + error.message);
         }
+        loadingSpinner.style.display = "none"; // Hide the spinner
       });
-  }
+}
+
 
   // Event listener for the search button click
   searchButton.addEventListener("click", function () {
@@ -274,16 +284,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   });
-
-  function displayErrorMessage(message) {
-    const searchResults = document.getElementById("searchResults");
-    searchResults.innerHTML = ""; // Clear previous results
-
-    const errorMsg = document.createElement("div");
-    errorMsg.textContent = message;
-    errorMsg.className = "error-message"; // Add a class for styling
-    searchResults.appendChild(errorMsg);
-  }
 
   function fetchVideoDetails(videoId, callback) {
     const videoEndpoint = `https://yt.lemnoslife.com/noKey/videos?id=${videoId}&part=snippet`;
@@ -390,6 +390,47 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
       searchResults.appendChild(noResultsMsg);
     }
+    // Clear the status message
+    updateStatusMessage(""); 
+  }
+
+  function updateStatusMessage(message) {
+    let statusDiv = document.getElementById("statusMessage");
+  
+    if (!statusDiv) {
+      // Create the status div if it doesn't exist
+      statusDiv = document.createElement("div");
+      statusDiv.id = "statusMessage";
+      statusDiv.style = "color: grey; margin-bottom: 10px;"; // Add your styling here
+  
+      // Assuming you have a spinner with the ID 'loadingSpinner'
+      const spinner = document.getElementById("loadingSpinner");
+      if (spinner) {
+        // Insert the statusDiv after the spinner
+        spinner.parentNode.insertBefore(statusDiv, spinner.nextSibling);
+      } else {
+        // Insert the statusDiv at the beginning of the body
+        document.body.insertBefore(statusDiv, document.body.firstChild);
+      }
+    }
+  
+    // Update the text content of the statusDiv
+    statusDiv.textContent = message;
+  }
+
+  var countdownInterval;
+
+  function startCountdown(duration, display) {
+      var timer = duration;
+      countdownInterval = setInterval(function () {
+          var seconds = parseInt(timer % 60, 10);
+          display.textContent = "Sending request to API endpoint, about " + seconds + " seconds remaining...";
+  
+          if (--timer < 0) {
+              clearInterval(countdownInterval);
+              display.textContent = "Processing response..."; // or you can clear it
+          }
+      }, 1000);
   }
 
   // Function to add channel to local storage
@@ -415,3 +456,4 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
+

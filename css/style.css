@@ -6,7 +6,7 @@
   color: rgba(70, 54, 54, 0);
   text-align: center;
   font-size: 18px;
-  font-family: "Roboto","Arial",sans-serif;
+  font-family: "Roboto", "Arial", sans-serif;
   font-weight: bold;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 100%;
@@ -28,7 +28,6 @@
   margin-top: 10px;
 }
 
-
 /* General body styling for consistency */
 body {
   display: flex;
@@ -40,20 +39,22 @@ body {
   padding: 0;
   background-color: #181818;
   color: #d5d5d5;
-  font-family: "Roboto","Arial",sans-serif;
+  font-family: "Roboto", "Arial", sans-serif;
   min-width: 348px;
   overflow: hidden;
 }
 
 .channel-info {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    margin-top: 5px;
-    font-size: 14px;
-    transition: background-color 0.2s;
-    border-radius: 5px;
-    padding: 4px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  margin-top: 2px;
+  justify-content: space-between;
+  font-size: 14px;
+  transition: background-color 0.2s;
+  border-radius: 12px;
+  padding: 4px;
+  border-bottom: 0.1px solid #e0e0e009;
 }
 
 .channel-info:hover {
@@ -62,35 +63,38 @@ body {
 }
 
 .channel-logo {
-    width: 25px;
-    height: 25px;
-    border-radius: 20px;
-    margin-right: 5px;
-    margin-top: 5px;
+  width: 25px;
+  height: 25px;
+  border-radius: 20px;
+  margin-right: 5px;
+  margin-top: 5px;
 }
 
 .channel-name {
-  font-family: "Roboto","Arial",sans-serif;
-    margin-right: 22px;
-    font-size: 15px;
+  font-family: "Roboto", "Arial", sans-serif;
+  margin-right: 42px;
+  font-size: 15px;
+  flex-grow: 1;
 }
 
 .live-status {
-    color: #555;
+  margin-left: 130px;
+  color: #555;
 }
 
 .live-status.live {
-    color: green;
+  margin-left: 130px;
+  color: green;
 }
 
 .live-status.not-live {
-    color: rgb(161, 46, 46);
+  margin-left: 130px;
+  color: rgb(161, 46, 46);
 }
 
-
-
 /* Reset margins and paddings for body and div elements */
-body, div {
+body,
+div {
   margin: 0;
   padding: 0;
 }
@@ -112,17 +116,16 @@ body, div {
 .searchContainer {
   display: flex;
   align-items: center;
-  margin-left: auto;  /* These margins push the container to the center */
+  margin-left: auto; /* These margins push the container to the center */
   margin-right: auto;
   border: 1px solid #303030;
   border-radius: 22px;
   background-color: #261f20; /* Background color for the entire search area */
 }
 
-
 /* Styling for the search input */
 #searchInput {
-  font-family: "Roboto","Arial",sans-serif;
+  font-family: "Roboto", "Arial", sans-serif;
   flex-grow: 1; /* Allow the input to grow */
   padding: 20px 15px; /* Adjust padding */
   border: none; /* Remove individual border */
@@ -154,7 +157,12 @@ body, div {
 }
 
 #searchButton:hover {
-  background-color: rgba(193, 36, 22, 0.475); /* Change background color on hover */
+  background-color: rgba(
+    193,
+    36,
+    22,
+    0.475
+  ); /* Change background color on hover */
 }
 
 #searchButton img {
@@ -164,7 +172,8 @@ body, div {
   width: auto; /* Maintain aspect ratio */
 }
 
-.no-results-message, .error-message {
+.no-results-message,
+.error-message {
   color: #ffffff; /* White color for better visibility */
   background-color: #cc0000; /* YouTube-like red background */
   padding: 10px 20px;
@@ -172,7 +181,7 @@ body, div {
   border-radius: 4px; /* Rounded corners */
   text-align: center;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
-  font-family: "Roboto","Arial",sans-serif;
+  font-family: "Roboto", "Arial", sans-serif;
   font-size: 14px;
 }
 
@@ -184,7 +193,7 @@ body, div {
   border-radius: 4px; /* Rounded corners */
   text-align: center;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
-  font-family: "Roboto","Arial",sans-serif;
+  font-family: "Roboto", "Arial", sans-serif;
   font-size: 13px;
 }
 
@@ -198,7 +207,6 @@ body, div {
   color: #ffcc00; /* A distinct color for example text */
   font-weight: bold; /* Make the example text bold */
 }
-
 
 #showSearch {
   background-color: transparent; /* Makes the button background transparent */
@@ -240,7 +248,6 @@ body, div {
   width: 100%; /* Full width of the button */
   height: 100%; /* Full height of the button */
 }
-
 
 #showSearch:hover {
   background-color: #2d2d2db6;
@@ -308,62 +315,81 @@ body, div {
   margin-top: 10px; /* Space between text and border */
 }
 
+#statusMessage {
+  background-color: rgb(86, 1, 7); /* PowerShell background color */
+  color: #ffffff; /* Text color */
+  font-family: 'Consolas', 'Courier New', monospace; /* Monospace font for console appearance */
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 10px; /* Adjust based on your layout */
+  min-height: 20px; /* Minimum height */
+  width: 95%; /* Adjust as necessary */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); /* Optional: adds depth */
+  word-wrap: break-word; /* Ensure long messages don't overflow */
+  font-size: 0.9em;
+  max-height: 150px;
+}
+
+/* Hide the status message when it's empty */
+#statusMessage:empty {
+  display: none;
+}
+
+
 @font-face {
-  font-family: 'Roboto';
-  src: url('../css/Roboto-Regular.woff2') format('woff2'),
-       url('../css/Roboto-Regular.woff') format('woff');
+  font-family: "Roboto";
+  src: url("../css/Roboto-Regular.woff2") format("woff2"),
+    url("../css/Roboto-Regular.woff") format("woff");
   font-weight: 400;
   font-style: normal;
 }
 
-
 /* Custom Scrollbar Styles */
 /* For Webkit browsers like Chrome, Safari */
 #scrollContainer::-webkit-scrollbar {
-    width: 3px; /* Width of the scrollbar */
-  }
-  
-  #scrollContainer::-webkit-scrollbar-track {
-    background-color: #efeff1; /* Light gray track */
-  }
-  
-  #scrollContainer::-webkit-scrollbar-thumb {
-    background-color: rgb(210, 49, 43); /* Twitch-like purple thumb */
-    border-radius: 5px; /* Rounded corners for the thumb */
-  }
-  
-  #scrollContainer::-webkit-scrollbar-thumb:hover {
-    background-color: #843d34; /* Darker purple on hover */
-  }
-  
+  width: 3px; /* Width of the scrollbar */
+}
+
+#scrollContainer::-webkit-scrollbar-track {
+  background-color: #efeff1; /* Light gray track */
+}
+
+#scrollContainer::-webkit-scrollbar-thumb {
+  background-color: rgb(210, 49, 43); /* Twitch-like purple thumb */
+  border-radius: 5px; /* Rounded corners for the thumb */
+}
+
+#scrollContainer::-webkit-scrollbar-thumb:hover {
+  background-color: #843d34; /* Darker purple on hover */
+}
+
+#scrollContainer {
+  max-height: calc(556px - 1px);
+  overflow-y: auto;
+}
+
+/* Increase height for high-resolution screens */
+@media screen and (min-width: 1920px) {
   #scrollContainer {
-    max-height: calc(556px - 1px);
-    overflow-y: auto;
+    max-height: 90vh; /* Adjust as needed for larger screens */
+    /* ... other styles ... */
   }
-  
-  /* Increase height for high-resolution screens */
-  @media screen and (min-width: 1920px) {
-    #scrollContainer {
-      max-height: 90vh; /* Adjust as needed for larger screens */
-      /* ... other styles ... */
-    }
-  }
-  
-  
-  /* For the entire popup window */
-  body::-webkit-scrollbar {
-    width: 5px; /* Width of the scrollbar */
-  }
-  
-  body::-webkit-scrollbar-track {
-    background-color: #f1efef; /* Light gray track */
-  }
-  
-  body::-webkit-scrollbar-thumb {
-    background-color: rgba(198, 39, 39, 0.638); /* Twitch-like purple thumb */
-    border-radius: 5px; /* Rounded corners for the thumb */
-  }
-  
-  body::-webkit-scrollbar-thumb:hover {
-    background-color: rgb(236, 74, 62); /* Darker purple on hover */
-  }
+}
+
+/* For the entire popup window */
+body::-webkit-scrollbar {
+  width: 5px; /* Width of the scrollbar */
+}
+
+body::-webkit-scrollbar-track {
+  background-color: #f1efef; /* Light gray track */
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: rgba(151, 27, 27, 0.638); /* Twitch-like purple thumb */
+  border-radius: 5px; /* Rounded corners for the thumb */
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(236, 74, 62); /* Darker purple on hover */
+}
