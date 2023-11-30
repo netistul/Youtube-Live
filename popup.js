@@ -72,11 +72,35 @@ document.addEventListener("DOMContentLoaded", function () {
   const searchResults = document.getElementById("searchResults");
   const loadingSpinner = document.createElement("img");
 
-  loadingSpinner.src = "css/loading.svg"; // Path to your loading spinner image
+  // Setup for the loading spinner
+  loadingSpinner.src = "css/loading.svg";
   loadingSpinner.id = "loadingSpinner";
-  loadingSpinner.style.display = "none"; // Initially hidden
-  document.body.appendChild(loadingSpinner); // Append it to the body or a specific div as per your layout
+  loadingSpinner.style.display = "none";
+  document.body.appendChild(loadingSpinner);
 
+  // Setup for debouncing the search input
+  let typingTimer;
+  const doneTypingInterval = 1000; // 1000ms = 1 second
+
+  // Event listener for the search button click
+  searchButton.addEventListener("click", function () {
+    const query = searchInput.value;
+    if (query) {
+      loadingSpinner.style.display = "block";
+      searchYouTubeChannels(query);
+    }
+  });
+
+  // Event listener for keyup on the search input
+  searchInput.addEventListener("keyup", function () {
+    clearTimeout(typingTimer);
+    if (searchInput.value) {
+      typingTimer = setTimeout(function () {
+        loadingSpinner.style.display = "block";
+        searchYouTubeChannels(searchInput.value);
+      }, doneTypingInterval);
+    }
+  });
   searchButton.addEventListener("click", function () {
     const query = searchInput.value;
     if (query) {
@@ -87,27 +111,54 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function searchYouTubeChannels(query) {
     let endpoint;
-    const maxResults = 10; // Set the number of results per page
-  
+    const maxResults = 5; // Set the number of results per page
+
+    console.log("Query received for search:", query); // Log the received query
+
     if (isValidYouTubeUrl(query)) {
       const { type, id } = extractYouTubeId(query);
-  
-      if (type === 'video') {
+
+      console.log("Extracted YouTube ID:", id, "Type:", type); // Log the extracted ID and type
+
+      if (type === "video") {
         // Fetch details about the video first
         fetchVideoDetails(id, displayChannelFromVideo);
         return;
-      } else if (type === 'channel') {
-        // Search for this specific channel
-        endpoint = `https://yt.lemnoslife.com/noKey/channels?id=${id}&part=snippet,contentDetails,statistics&maxResults=${maxResults}`;
+      } else if (type === "channel") {
+        // Check if the ID looks like a custom name
+        if (isLikelyCustomName(id)) {
+          // Use search endpoint for custom names
+          endpoint = `https://yt.lemnoslife.com/noKey/search?part=id,snippet&type=channel&q=${encodeURIComponent(
+            id
+          )}&maxResults=${maxResults}`;
+        } else {
+          // Use channels endpoint for direct channel ID
+          endpoint = `https://yt.lemnoslife.com/noKey/channels?id=${id}&part=snippet,contentDetails,statistics&maxResults=${maxResults}`;
+        }
       }
     } else {
       // Regular text search for channels
-      endpoint = `https://yt.lemnoslife.com/noKey/search?part=id,snippet&type=channel&q=${encodeURIComponent(query)}&maxResults=${maxResults}`;
+      endpoint = `https://yt.lemnoslife.com/noKey/search?part=id,snippet&type=channel&q=${encodeURIComponent(
+        query
+      )}&maxResults=${maxResults}`;
     }
-  
+
+    console.log("Constructed API endpoint:", endpoint); // Log the constructed API endpoint
+
     if (endpoint) {
       performSearch(endpoint);
+    } else {
+      console.log("No valid endpoint constructed."); // Log when no valid endpoint is constructed
+      loadingSpinner.style.display = "none"; // Hide the loading spinner
     }
+  }
+
+  function isLikelyCustomName(id) {
+    // A simple check to determine if the ID is likely a custom name rather than a numeric ID.
+    // YouTube channel IDs are typically 24 characters long and contain a mix of letters (both uppercase and lowercase) and numbers.
+    // Custom names are usually shorter and may not follow this pattern.
+    const channelIdPattern = /^[a-zA-Z0-9_-]{24}$/;
+    return !channelIdPattern.test(id);
   }
 
   function isValidYouTubeUrl(url) {
@@ -119,16 +170,33 @@ document.addEventListener("DOMContentLoaded", function () {
     const urlObj = new URL(url);
     const pathname = urlObj.pathname;
     const searchParams = urlObj.searchParams;
-  
-    if (pathname.includes('/channel/')) {
-      return { type: 'channel', id: pathname.split('/channel/')[1] };
-    } else if (searchParams.has('v')) {
-      return { type: 'video', id: searchParams.get('v') };
+
+    // Check for channel URLs
+    if (pathname.includes("/channel/")) {
+      return { type: "channel", id: pathname.split("/channel/")[1] };
+    } else if (
+      pathname.includes("/c/") ||
+      pathname.includes("/user/") ||
+      pathname.startsWith("/@")
+    ) {
+      let channelName = pathname.split("/").pop();
+      channelName = channelName.startsWith("@")
+        ? channelName.substring(1)
+        : channelName;
+      return { type: "channel", id: channelName };
     }
-  
+    // Check for standard video URL
+    else if (searchParams.has("v")) {
+      return { type: "video", id: searchParams.get("v") };
+    }
+    // Check for shortened video URL
+    else if (urlObj.host === "youtu.be") {
+      return { type: "video", id: pathname.substring(1) }; // Remove the leading '/'
+    }
+
     return { type: null, id: null };
   }
-  
+
   function performSearch(endpoint) {
     fetch(endpoint)
       .then((response) => response.json())
@@ -139,8 +207,11 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch((error) => {
         console.error("Error fetching search results:", error);
+        displayErrorMessage(
+          "An error occurred while fetching search results. Please try again later."
+        );
         loadingSpinner.style.display = "none"; // Hide the spinner
-  
+
         // Provide a more descriptive error message to the user
         if (error.message === "Failed to fetch") {
           alert(
@@ -154,9 +225,41 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
+  // Event listener for the search button click
+  searchButton.addEventListener("click", function () {
+    const query = searchInput.value;
+    if (query) {
+      loadingSpinner.style.display = "block"; // Show the loading spinner
+      searchYouTubeChannels(query);
+    }
+  });
+
+  // Event listener for pressing Enter key in the search input
+  searchInput.addEventListener("keypress", function (event) {
+    if (event.key === "Enter" || event.keyCode === 13) {
+      // Check if Enter was pressed
+      event.preventDefault(); // Prevent the default action to avoid form submission
+      const query = searchInput.value;
+      if (query) {
+        loadingSpinner.style.display = "block"; // Show the loading spinner
+        searchYouTubeChannels(query);
+      }
+    }
+  });
+
+  function displayErrorMessage(message) {
+    const searchResults = document.getElementById("searchResults");
+    searchResults.innerHTML = ""; // Clear previous results
+
+    const errorMsg = document.createElement("div");
+    errorMsg.textContent = message;
+    errorMsg.className = "error-message"; // Add a class for styling
+    searchResults.appendChild(errorMsg);
+  }
+
   function fetchVideoDetails(videoId, callback) {
     const videoEndpoint = `https://yt.lemnoslife.com/noKey/videos?id=${videoId}&part=snippet`;
-  
+
     fetch(videoEndpoint)
       .then((response) => response.json())
       .then((data) => {
@@ -169,14 +272,16 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch((error) => {
         console.error("Error fetching video details:", error);
-        alert("An error occurred while fetching video details. Please try again later.");
+        alert(
+          "An error occurred while fetching video details. Please try again later."
+        );
         loadingSpinner.style.display = "none"; // Hide the spinner
       });
   }
-  
+
   function displayChannelFromVideo(channelId) {
     const channelEndpoint = `https://yt.lemnoslife.com/noKey/channels?id=${channelId}&part=snippet,contentDetails,statistics&maxResults=1`;
-  
+
     fetch(channelEndpoint)
       .then((response) => response.json())
       .then((data) => {
@@ -195,52 +300,68 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch((error) => {
         console.error("Error fetching channel details:", error);
-        alert("An error occurred while fetching channel details. Please try again later.");
+        alert(
+          "An error occurred while fetching channel details. Please try again later."
+        );
         loadingSpinner.style.display = "none"; // Hide the spinner
       });
   }
-  
-  
 
   function displaySearchResults(data) {
     const searchResults = document.getElementById("searchResults");
     searchResults.innerHTML = ""; // Clear previous results
 
-    data.items.forEach((item) => {
-      if (item.id.kind === "youtube#channel") {
-        const div = document.createElement("div");
-        div.className = "search-result-item";
+    if (data.items && Array.isArray(data.items) && data.items.length > 0) {
+      data.items.forEach((item) => {
+        if (item.id.kind === "youtube#channel") {
+          const div = document.createElement("div");
+          div.className = "search-result-item";
 
-        // Thumbnail (Channel Logo)
-        const thumbnail = document.createElement("img");
-        thumbnail.src = item.snippet.thumbnails.default.url;
-        thumbnail.alt = "Channel Logo";
-        thumbnail.className = "search-result-channel-logo";
+          // Thumbnail (Channel Logo)
+          const thumbnail = document.createElement("img");
+          thumbnail.src = item.snippet.thumbnails.default.url;
+          thumbnail.alt = "Channel Logo";
+          thumbnail.className = "search-result-channel-logo";
 
-        // Channel Title
-        const title = document.createElement("h3");
-        title.textContent = item.snippet.title;
+          // Channel Title
+          const title = document.createElement("h3");
+          title.textContent = item.snippet.title;
 
-        // Plus Button
-        const addButton = document.createElement("button");
-        addButton.textContent = "+";
-        addButton.className = "add-channel-button";
-        addButton.onclick = () =>
-          addChannelToLocal(
-            item.id.channelId,
-            item.snippet.title,
-            thumbnail.src
-          );
+          // Plus Button
+          const addButton = document.createElement("button");
+          addButton.textContent = "+";
+          addButton.className = "add-channel-button";
+          addButton.onclick = () =>
+            addChannelToLocal(
+              item.id.channelId,
+              item.snippet.title,
+              thumbnail.src
+            );
 
-        // Append elements to the div
-        div.appendChild(thumbnail);
-        div.appendChild(title);
-        div.appendChild(addButton);
+          // Append elements to the div
+          div.appendChild(thumbnail);
+          div.appendChild(title);
+          div.appendChild(addButton);
 
-        // Append the div to the search results container
-        searchResults.appendChild(div);
-      }
-    });
+          // Append the div to the search results container
+          searchResults.appendChild(div);
+        }
+      });
+    } else {
+      // Display a message when no channels are found
+      const noResultsMsg = document.createElement("div");
+      noResultsMsg.className = "no-results-message"; // Add a class for styling
+      noResultsMsg.innerHTML = `
+            <p>No channels found. Please try a different search.</p>
+            <p class="search-examples">
+                E.g.,<br>
+                For channel name: <span class="example">MrBeast</span><br>
+                Channel link: <span class="example">https://www.youtube.com/@MrBeast</span><br>
+                Or a YouTube link from that channel: <span class="example">https://www.youtube.com/watch?v=Wdjh81uH6FU</span>
+            </p>
+        `;
+      searchResults.appendChild(noResultsMsg);
+    }
   }
 
   // Function to add channel to local storage

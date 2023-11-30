@@ -1,21 +1,34 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Live Channel Checker</title>
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-</head>
-<body>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+  </head>
+  <body>
     <div class="header">
-        YouTube Live
-        <button id="showSearch">+</button>
+      YouTube Live
+      <button id="showSearch">+</button>
     </div>
     <div id="status">Checking channels...</div>
-    <div id="searchSection" style="display: none;">
+    <div id="searchSection" style="display: none">
         <button id="backButton"><</button>
-        <input type="text" id="searchInput" placeholder="Search YouTube channels">
-        <button id="searchButton">Search</button>
-        <div id="searchResults"></div>
-    </div>
+        <div class="searchContainer"> <!-- New container for input and button -->
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="YouTube channel name, channel link or video link"
+            autocomplete="off"
+          />
+          <button id="searchButton">
+            <img src="css/searchicon.svg" alt="Search" />
+          </button>
+        </div>
+        <div id="searchResults">
+            <div id="addChannelText">
+                Type below to add a YouTube channel to your list
+            </div>
+        </div>
+      </div>
     <script src="popup.js"></script>
-</body>
+  </body>
 </html>

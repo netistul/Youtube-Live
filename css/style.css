@@ -1,26 +1,48 @@
-/* Style for the YouTube-like header */
 .header {
-    display: flex;
-    justify-content: center; /* Centered horizontally */
-    align-items: center;
-    background-color: #ff00007a; /* YouTube's iconic red */
-    color: white;
-    padding: 10px 0; /* Add some padding */
-    font-size: 20px;
-    font-family: 'Roboto', sans-serif;
-    font-weight: bold; /* Make the font bold */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.096); /* Subtle shadow for depth */
-    width: 100%; /* Ensure it takes full width */
-    margin: 0; /* Remove any default margin */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #202020;
+  color: rgba(70, 54, 54, 0);
+  text-align: center;
+  font-size: 18px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  margin: 0;
+  margin-top: 0;
+  padding: 10px;
+  border-radius: 5px;
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* Ensures it's above other elements */
 }
+/* Add a light gray border below the header */
+.header::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 1px;
+  background-color: #404040; /* Use the same light gray border color */
+  margin-top: 10px;
+}
+
 
 /* General body styling for consistency */
 body {
-    font-family: "Open Sans", Arial, sans-serif;
-    margin: 0; /* Removes default margin */
-    padding: 0; /* Removes default padding */
-    min-width: 400px;
-    overflow: hidden; /* Hide overflow */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center children horizontally */
+  justify-content: flex-start; /* Align children from the top */
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-color: #181818;
+  color: #fff;
+  font-family: 'Roboto', sans-serif;
+  min-width: 400px;
+  overflow: hidden;
 }
 
 .channel-info {
@@ -30,8 +52,8 @@ body {
 }
 
 .channel-logo {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     border-radius: 20px;
     margin-right: 10px;
 }
@@ -55,61 +77,208 @@ body {
 
 
 
-/* Style for the plus button */
-#showSearch {
-    margin-right: 10px;
-    cursor: pointer;
-    background-color: white;
-    color: black;
-    border: none;
-    border-radius: 50%;
-    width: 25px;
-    height: 25px;
-    font-size: 16px;
-    line-height: 25px;
-    text-align: center;
+/* Reset margins and paddings for body and div elements */
+body, div {
+  margin: 0;
+  padding: 0;
 }
 
+/* Styling for the search section */
+#searchSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  box-sizing: border-box;
+  margin-top: 0px; /* Add some space between header and search section */
+}
+
+/* Styling for the new search container */
+.searchContainer {
+  display: flex;
+  align-items: center;
+  margin-left: auto;  /* These margins push the container to the center */
+  margin-right: auto;
+  border: 1px solid #303030;
+  border-radius: 22px;
+  background-color: #261f20; /* Background color for the entire search area */
+}
+
+
+/* Styling for the search input */
+#searchInput {
+  flex-grow: 1; /* Allow the input to grow */
+  padding: 10px 15px; /* Adjust padding */
+  border: none; /* Remove individual border */
+  background-color: #261f20c7 !important;
+  color: white;
+  border-top-left-radius: 22px; /* Add border radius to the top-left corner */
+  border-bottom-left-radius: 22px; /* Add border radius to the bottom-left corner */
+  font-size: 13px;
+}
+
+#searchInput:focus {
+  background-color: #1f1e1e !important;
+  outline: none;
+}
+
+/* Styling for the search button */
+#searchButton {
+  position: relative;
+  padding: 10px; /* Adjust the padding to ensure button size */
+  background-color: #261f20;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top-right-radius: 22px;
+  border-bottom-right-radius: 22px;
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+#searchButton:hover {
+  background-color: rgba(193, 36, 22, 0.475); /* Change background color on hover */
+}
+
+#searchButton img {
+  max-width: 24px; /* Set the desired width of the image */
+  max-height: 24px; /* Set the desired height of the image */
+  height: auto; /* Maintain aspect ratio */
+  width: auto; /* Maintain aspect ratio */
+}
+
+.no-results-message, .error-message {
+  color: #ffffff; /* White color for better visibility */
+  background-color: #cc0000; /* YouTube-like red background */
+  padding: 10px 20px;
+  margin-top: 15px;
+  border-radius: 4px; /* Rounded corners */
+  text-align: center;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  font-family: 'Roboto', sans-serif; /* YouTube-like font */
+  font-size: 14px;
+}
+
+.no-results-message {
+  color: #ffffff; /* White color for better visibility */
+  background-color: #cc0000; /* YouTube-like red background */
+  padding: 10px 20px;
+  margin-top: 15px;
+  border-radius: 4px; /* Rounded corners */
+  text-align: center;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  font-family: 'Roboto', sans-serif; /* YouTube-like font */
+  font-size: 13px;
+}
+
+.search-examples {
+  margin-top: 10px;
+  text-align: left; /* Left align the examples for clarity */
+  color: #dddddd; /* Lighter color for the examples */
+}
+
+.search-examples .example {
+  color: #ffcc00; /* A distinct color for example text */
+  font-weight: bold; /* Make the example text bold */
+}
+
+
+#showSearch, #backButton {
+  background-color: #282424a8;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 2px;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  margin-right: 10px;
+}
+
+#backButton {
+  position: absolute;
+  top: 10px; /* Adjust as needed */
+  left: 10px; /* Adjust as needed */
+  z-index: 1010; /* Higher than the header to ensure visibility */
+  background-color: #303030;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+#showSearch:hover, #backButton:hover {
+  background-color: #3a3a3a;
+}
+
+/* Styling for each search result item */
 .search-result-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Align items with space between */
+  padding: 5px;
+  border-bottom: 1px solid #303030; /* Optional: adds a line between items */
 }
 
 .search-result-channel-logo {
-    width: 50px;
-    height: 50px;
-    margin-right: 10px;
-    border-radius: 50%;
+  width: 30px; /* Adjust as needed */
+  height: 30px; /* Adjust as needed */
+  margin-right: 10px;
 }
 
-.search-result-item h3 {
-    margin: 0;
-    padding: 0;
+.channel-name {
+  flex-grow: 1; /* Allows the channel name to take up available space */
+  margin-right: 10px; /* Space before the "+" button */
 }
 
-
-/* Style for the search section */
-#searchSection {
-    /* Add your styles here */
+/* AddChannelText Styling for Dark Theme */
+#addChannelText {
+  font-size: 18px; /* Adjust the font size as needed */
+  text-align: center; /* Center align the text */
+  margin-top: 20px; /* Add some top margin for spacing */
+  color: #ffffff; /* White text color for dark theme */
 }
 
-/* Style for the back button */
-#backButton {
-    cursor: pointer;
-    background-color: white;
-    color: black;
-    border: none;
-    border-radius: 50%;
-    width: 25px;
-    height: 25px;
-    font-size: 16px;
-    line-height: 25px;
-    text-align: center;
-    margin-bottom: 10px; /* Spacing from the search content */
+/* Apply a subtle shadow to the text for depth */
+#addChannelText {
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
+
+/* Add a dark background color */
+#addChannelText {
+  background-color: #202020; /* Dark background color */
+  padding: 10px; /* Add padding for better visual separation */
+  border-radius: 5px; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
+/* Style the text like a YouTube header */
+#addChannelText::before {
+  content: "";
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background-size: cover;
+  margin-right: 10px; /* Space between icon and text */
+  vertical-align: middle;
+}
+
+/* Add a light gray border below the text */
+#addChannelText::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 1px;
+  background-color: #404040; /* Light gray border color for dark theme */
+  margin-top: 10px; /* Space between text and border */
+}
+
 
 /* Custom Scrollbar Styles */
 /* For Webkit browsers like Chrome, Safari */
