@@ -110,6 +110,9 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   function searchYouTubeChannels(query) {
+    // Clear existing search results when a new search starts
+    const searchResults = document.getElementById("searchResults");
+    searchResults.innerHTML = '';
     let endpoint;
     const maxResults = 5; // Set the number of results per page
 
