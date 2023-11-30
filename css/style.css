@@ -18,6 +18,7 @@
   top: 0;
   z-index: 1000; /* Ensures it's above other elements */
 }
+
 /* Add a light gray border below the header */
 .header::after {
   content: "";
@@ -43,6 +44,15 @@ body {
   min-width: 348px;
   overflow: hidden;
 }
+
+#channel-list {
+  overflow-y: auto; /* Enables scrolling if content exceeds max-height */
+  padding: 10px;
+  margin-top: 10px;
+  max-height: 504px !important; /* Example max-height, adjust as needed */
+  height: auto; /* Allows dynamic height adjustment */
+}
+
 /* Base styles for channel info */
 .channel-info {
   display: flex;
@@ -285,17 +295,68 @@ div {
 /* Styling for each search result item */
 .search-result-item {
   display: flex;
-  align-items: center;
-  justify-content: space-between; /* Align items with space between */
-  padding: 5px;
+  align-items: center; /* Align items to the center */
+  justify-content: space-between; /* Distribute space between elements */
+  padding: 10px;
   border-bottom: 1px solid #303030; /* Optional: adds a line between items */
 }
 
-.search-result-channel-logo {
-  width: 30px; /* Adjust as needed */
-  height: 30px; /* Adjust as needed */
-  margin-right: 10px;
+/* Container for the channel logo and info */
+.info-button-container {
+  display: flex;
+  align-items: center; /* Align items to the center */
+  flex-grow: 1;
 }
+
+/* Container for the channel logo */
+.logo-container {
+  margin-right: 20px; /* Space between logo and text */
+}
+
+/* Styling for the channel logo */
+.search-result-channel-logo {
+  width: 80px; /* Adjust size as needed */
+  height: 80px; /* Adjust size as needed */
+  border-radius: 40px; /* Circular shape */
+}
+
+/* Container for channel info (name and description) */
+.info-container {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  flex-grow: 1; /* Allow it to take available space */
+}
+
+/* Styling for the channel title */
+.channel-title {
+  font-size: 1.2em; /* Adjust size as needed */
+  margin-bottom: 5px; /* Space between title and description */
+}
+
+/* Styling for the channel description */
+.channel-description {
+  font-size: 0.9em; /* Adjust size as needed */
+  color: #666; /* Lighter text color */
+  white-space: nowrap; /* Prevent line breaks */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Add ellipsis for overflow */
+}
+
+/* Styling for the add channel button */
+.add-channel-button {
+  padding: 5px 10px; /* Adjust padding as needed */
+  background-color: #4CAF50; /* Example color */
+  color: white; /* Text color */
+  border: none;
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer;
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.add-channel-button:hover {
+  background-color: #45a049; /* Darker shade on hover */
+}
+
 
 /* AddChannelText Styling for Dark Theme */
 #addChannelText {
@@ -359,6 +420,35 @@ div {
   display: none;
 }
 
+#customContextMenu {
+  background-color: #282828 !important;
+  color: #fff; /* Light text color for contrast */
+  border: 1px solid #303030; /* Dark border color */
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Shadow for depth */
+  padding: 10px;
+  font-family: "Roboto", "Arial", sans-serif; /* YouTube-like font */
+  font-size: 14px; /* Appropriate font size */
+}
+
+#customContextMenu ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#customContextMenu li {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px; /* Rounded corners for each item */
+  transition: background-color 0.2s; /* Smooth transition for hover effect */
+}
+
+#customContextMenu li:hover {
+  background-color: #383838; /* Slightly lighter shade for hover */
+}
+
+
 @font-face {
   font-family: "Roboto";
   src: url("../css/Roboto-Regular.woff2") format("woff2"),
@@ -367,39 +457,39 @@ div {
   font-style: normal;
 }
 
-/* Custom Scrollbar Styles */
+/* Custom Scrollbar Styles for the channel-list container */
 /* For Webkit browsers like Chrome, Safari */
-#scrollContainer::-webkit-scrollbar {
+#channel-list::-webkit-scrollbar {
   width: 3px; /* Width of the scrollbar */
 }
 
-#scrollContainer::-webkit-scrollbar-track {
-  background-color: #efeff1; /* Light gray track */
+#channel-list::-webkit-scrollbar-track {
+  background-color: #000000; /* Light gray track */
 }
 
-#scrollContainer::-webkit-scrollbar-thumb {
-  background-color: rgb(210, 49, 43); /* Twitch-like purple thumb */
+#channel-list::-webkit-scrollbar-thumb {
+  background-color: #843d34; /* Custom thumb color */
   border-radius: 5px; /* Rounded corners for the thumb */
 }
 
-#scrollContainer::-webkit-scrollbar-thumb:hover {
-  background-color: #843d34; /* Darker purple on hover */
+#channel-list::-webkit-scrollbar-thumb:hover {
+  background-color: #cc4531; /* Darker color on hover */
 }
 
-#scrollContainer {
+#channel-list {
   max-height: calc(556px - 1px);
   overflow-y: auto;
 }
 
 /* Increase height for high-resolution screens */
 @media screen and (min-width: 1920px) {
-  #scrollContainer {
+  #channel-list {
     max-height: 90vh; /* Adjust as needed for larger screens */
     /* ... other styles ... */
   }
 }
 
-/* For the entire popup window */
+/* Styles for the entire popup window's scrollbar */
 body::-webkit-scrollbar {
   width: 5px; /* Width of the scrollbar */
 }
@@ -409,10 +499,11 @@ body::-webkit-scrollbar-track {
 }
 
 body::-webkit-scrollbar-thumb {
-  background-color: rgba(151, 27, 27, 0.638); /* Twitch-like purple thumb */
+  background-color: rgba(151, 27, 27, 0.638); /* Custom thumb color */
   border-radius: 5px; /* Rounded corners for the thumb */
 }
 
 body::-webkit-scrollbar-thumb:hover {
-  background-color: rgb(236, 74, 62); /* Darker purple on hover */
+  background-color: #843d34; /* Darker color on hover */
 }
+

@@ -20,7 +20,9 @@ document.addEventListener("DOMContentLoaded", function () {
           return isLiveB - isLiveA;
         });
 
-        statusDiv.innerHTML = "";
+        statusDiv.innerHTML = "<div id='channel-list'></div>"; // Create a new container for channels
+
+        const channelList = document.getElementById("channel-list"); // Get the new container
 
         storedChannels.forEach(([channelId, channelName, logoUrl]) => {
           const channelDiv = document.createElement("div");
@@ -65,11 +67,68 @@ document.addEventListener("DOMContentLoaded", function () {
           channelDiv.appendChild(name);
           channelDiv.appendChild(liveStatus);
 
-          statusDiv.appendChild(channelDiv);
+          channelList.appendChild(channelDiv); // Append each channel to the channel-list container
+
+          channelDiv.addEventListener(
+            "contextmenu",
+            function (event) {
+              event.preventDefault(); // Prevent the default context menu
+              showContextMenu(event.pageX, event.pageY, channelId);
+              return false;
+            },
+            false
+          );
         });
+
+        function showContextMenu(x, y, channelId) {
+          const contextMenu = document.getElementById("customContextMenu");
+          const menuWidth = contextMenu.offsetWidth;
+          const menuHeight = contextMenu.offsetHeight;
+          const windowWidth = window.innerWidth;
+          const windowHeight = window.innerHeight;
+
+          // Adjust if the menu goes off the right side of the window
+          if (x + menuWidth > windowWidth) {
+            x = windowWidth - menuWidth;
+          }
+
+          // Adjust if the menu goes off the bottom of the window
+          if (y + menuHeight > windowHeight) {
+            y = windowHeight - menuHeight;
+          }
+
+          contextMenu.style.top = y + "px";
+          contextMenu.style.left = x + "px";
+          contextMenu.style.display = "block";
+
+          const deleteOption = document.getElementById("deleteChannel");
+          deleteOption.onclick = function () {
+            deleteChannel(channelId);
+          };
+        }
       }
     );
   }
+
+  function deleteChannel(channelId) {
+    // Access local storage and remove the channel
+    chrome.storage.local.get(["yt_live_channels_id"], function (result) {
+      let channels = result.yt_live_channels_id || [];
+      channels = channels.filter((channel) => channel[0] !== channelId);
+      chrome.storage.local.set({ yt_live_channels_id: channels }, function () {
+        console.log(`Channel ${channelId} deleted.`);
+        // Refresh the list or take any other necessary action
+        refreshLiveChannels();
+      });
+    });
+
+    // Hide the context menu
+    document.getElementById("customContextMenu").style.display = "none";
+  }
+
+  document.addEventListener("click", function (event) {
+    document.getElementById("customContextMenu").style.display = "none";
+  });
 
   // Initial call to load live channels list
   refreshLiveChannels();
@@ -235,13 +294,14 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function performSearch(endpoint) {
-    var timeInSeconds = 10; // Set the countdown time
+    var timeInSeconds = 10;
     updateStatusMessage(
       "Sending request to API endpoint, about " +
         timeInSeconds +
         " seconds remaining..."
     );
     startCountdown(timeInSeconds, document.getElementById("statusMessage"));
+
     fetch(endpoint)
       .then((response) => {
         if (!response.ok) {
@@ -250,31 +310,27 @@ document.addEventListener("DOMContentLoaded", function () {
           );
         }
         return response.json();
-        updateStatusMessage("");
       })
       .then((data) => {
         clearInterval(countdownInterval);
-        updateStatusMessage("Displaying search results...");
         console.log("API Response:", data); // Log the response data
+
+        // Clear the status message here, before displaying search results
+        updateStatusMessage("");
+
         displaySearchResults(data);
-        loadingSpinner.style.display = "none"; // Hide the loading spinner when results are ready
+        loadingSpinner.style.display = "none"; // Hide the loading spinner
       })
       .catch((error) => {
         console.error("Error fetching search results:", error);
-        if (error.message.includes("Failed to fetch")) {
-          // Handle failed to fetch error
-          clearInterval(countdownInterval);
-          updateStatusMessage(
-            "Failed to fetch data. This could be due to network issues or API endpoint timeout. Please try again."
-          );
-        } else {
-          // Handle other types of errors
-          clearInterval(countdownInterval);
-          updateStatusMessage(
-            "An error occurred while fetching search results: " + error.message
-          );
-        }
-        loadingSpinner.style.display = "none"; // Hide the spinner
+        clearInterval(countdownInterval);
+
+        // Clear the status message in case of an error
+        updateStatusMessage(
+          "An error occurred: " + error.message + "Try again now"
+        );
+
+        loadingSpinner.style.display = "none";
       });
   }
 
@@ -357,6 +413,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (data.items && Array.isArray(data.items) && data.items.length > 0) {
       data.items.forEach((item) => {
         if (item.id.kind === "youtube#channel") {
+          // Create main container for each item
           const div = document.createElement("div");
           div.className = "search-result-item";
 
@@ -366,9 +423,16 @@ document.addEventListener("DOMContentLoaded", function () {
           thumbnail.alt = "Channel Logo";
           thumbnail.className = "search-result-channel-logo";
 
-          // Channel Title
+          // Channel Info (Name and Description)
+          const infoDiv = document.createElement("div");
           const title = document.createElement("h3");
           title.textContent = item.snippet.title;
+          const description = document.createElement("p");
+          description.textContent =
+            item.snippet.description || "No description available.";
+
+          infoDiv.appendChild(title);
+          infoDiv.appendChild(description);
 
           // Plus Button
           const addButton = document.createElement("button");
@@ -383,7 +447,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
           // Append elements to the div
           div.appendChild(thumbnail);
-          div.appendChild(title);
+          div.appendChild(infoDiv);
           div.appendChild(addButton);
 
           // Append the div to the search results container
@@ -393,18 +457,19 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       // Display a message when no channels are found
       const noResultsMsg = document.createElement("div");
-      noResultsMsg.className = "no-results-message"; // Add a class for styling
+      noResultsMsg.className = "no-results-message";
       noResultsMsg.innerHTML = `
-            <p>No channels found. Please try a different search.</p>
-            <p class="search-examples">
-                E.g.,<br>
-                For channel name: <span class="example">MrBeast</span><br>
-                Channel link: <span class="example">https://www.youtube.com/@MrBeast</span><br>
-                Or a YouTube link from that channel: <span class="example">https://www.youtube.com/watch?v=Wdjh81uH6FU</span>
-            </p>
-        `;
+      <p>No channels found. Please try a different search.</p>
+      <p class="search-examples">
+          E.g.,<br>
+          For channel name: <span class="example">MrBeast</span><br>
+          Channel link: <span class="example">https://www.youtube.com/@MrBeast</span><br>
+          Or a YouTube link from that channel: <span class="example">https://www.youtube.com/watch?v=Wdjh81uH6FU</span>
+      </p>
+    `;
       searchResults.appendChild(noResultsMsg);
     }
+
     // Clear the status message
     updateStatusMessage("");
   }

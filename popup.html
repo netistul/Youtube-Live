@@ -11,11 +11,21 @@
         <img src="css/add.svg" alt="Add" />
     </button>
     </div>
-    <div id="status">Checking channels...</div>
+    <div id="status">
+      Checking channels...
+      <div id="channel-list">
+        <!-- Channel info elements will be dynamically appended here -->
+      </div>
+    </div>
+    <div id="customContextMenu" style="display: none; position: absolute; z-index: 1000; background-color: white; border: 1px solid black;">
+      <ul>
+          <li id="deleteChannel">Delete Channel</li>
+      </ul>
+  </div>
     <div id="searchSection" style="display: none">
         <button id="backButton">
             <img src="css/back.svg" alt="Back" />
-        </button>
+        </button>    
         <div class="searchContainer"> <!-- New container for input and button -->
           <input
             type="text"
