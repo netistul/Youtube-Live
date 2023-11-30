@@ -309,8 +309,8 @@ div {
 /* Styling for each search result item */
 .search-result-item {
   display: grid;
-  grid-template-columns: 80px 1fr auto; /* logo, channel info, add button */
-  grid-gap: 15px; /* Increase the gap between grid columns */
+  grid-template-columns: 80px minmax(0, 1fr) auto; /* logo, channel info, add button */
+  grid-gap: 15px; /* Adjust the gap between grid columns */
   align-items: center; /* Align items vertically in the center */
   padding: 10px;
   border-bottom: 1px solid #303030;
