@@ -306,58 +306,43 @@ div {
   height: 100%; /* Full height of the button */
 }
 
+/* Styling for each search result item */
 .search-result-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; /* This will keep the add button aligned to the right */
+  display: grid;
+  grid-template-columns: 80px 1fr auto; /* logo, channel info, add button */
+  grid-gap: 15px; /* Increase the gap between grid columns */
+  align-items: center; /* Align items vertically in the center */
   padding: 10px;
   border-bottom: 1px solid #303030;
 }
-
-/* Container for the channel logo and info */
-.info-button-container {
-  display: flex;
-  align-items: center;
-  flex-grow: 1; /* Allow this container to grow and use available space */
-  margin-right: 20px; /* Space between info and add button */
-}
-
-/* Container grouping the logo, name, and description */
-.channel-info-container {
-  display: flex;
-  align-items: center;
-  margin-right: 20px; /* Fixed margin to ensure consistent spacing from the add button */
-}
-
-/* Container for the channel logo */
-.logo-container {
-  margin-right: 10px; /* Fixed space between logo and text */
-}
-
 /* Styling for the channel logo */
 .search-result-channel-logo {
-  width: 80px; /* Adjust size as needed */
-  height: 80px; /* Adjust size as needed */
-  border-radius: 40px; /* Circular shape */
+  width: 80px;
+  height: 80px;
+  border-radius: 40px;
+  /* No margin-right needed, as grid takes care of spacing */
 }
 
 /* Container for channel info (name and description) */
 .info-container {
   display: flex;
   flex-direction: column;
-  flex-shrink: 0; /* Prevent shrinking */
+  /* No need for flex-grow or margin-right */
 }
 
 /* Styling for the channel title */
 .channel-title {
-  font-size: 1.2em; /* Adjust size as needed */
-  margin-bottom: 5px; /* Space between title and description */
+  font-size: 1.2em;
+  margin-bottom: 5px;
 }
 
 /* Styling for the channel description */
 .channel-description {
-  font-size: 0.9em; /* Adjust size as needed */
-  color: #666; /* Lighter text color */
+  font-size: 0.9em;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Styling for the add channel button */
