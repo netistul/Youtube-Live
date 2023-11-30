@@ -55,16 +55,17 @@ body {
 
 /* Base styles for channel info */
 .channel-info {
-  display: flex;
+  display: grid;
+  grid-template-columns: 30px minmax(200px, 1fr) 40px; /* logo, channel name, live status */
   align-items: center;
+  gap: 10px;
   margin-bottom: 5px;
   margin-top: 2px;
-  justify-content: space-between;
   font-size: 14px;
-  transition: background-color 0.2s, opacity 0.3s ease; /* Add opacity transition */
   border-radius: 12px;
   padding: 10px;
   border-bottom: 0.1px solid #e0e0e009;
+  transition: background-color 0.2s, opacity 0.3s ease;
 }
 
 /* Faded effect for not-live channels */
@@ -88,21 +89,18 @@ body {
 /* Additional styles */
 
 .channel-logo {
-  width: 25px;
-  height: 25px;
-  margin-right: 5px;
+  width: 30px; /* Fixed width for the logo */
+  height: 30px; /* Adjust height as needed */
   border-radius: 20px;
   flex-shrink: 0;
 }
+
 .channel-name {
-  max-width: 60%; /* Example value, adjust as needed */
-  white-space: normal;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-right: 100px; /* Space before the "+" button */
-  font-family: "Roboto", "Arial", sans-serif;
   font-size: 15px;
-  flex-grow: 1;
+  flex-grow: 1; /* Allows the channel name to grow and use available space */
 }
 
 .channel-logo, .channel-name {
@@ -111,7 +109,10 @@ body {
 
 
 .live-status {
+  width: 50px; /* Fixed width for the live status */
   color: #555;
+  text-align: right; /* Align live status text to the right */
+  flex-shrink: 0;
 }
 
 .live-status.live {
