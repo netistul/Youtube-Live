@@ -51,6 +51,14 @@ body {
     margin-bottom: 10px;
     margin-top: 5px;
     font-size: 14px;
+    transition: background-color 0.2s;
+    border-radius: 5px;
+    padding: 4px;
+}
+
+.channel-info:hover {
+  background-color: #272727; /* Change to the desired background color */
+  cursor: pointer; /* Change to the desired cursor style */
 }
 
 .channel-logo {
@@ -320,12 +328,12 @@ body, div {
   }
   
   #scrollContainer::-webkit-scrollbar-thumb {
-    background-color: #6441a55e; /* Twitch-like purple thumb */
+    background-color: rgb(210, 49, 43); /* Twitch-like purple thumb */
     border-radius: 5px; /* Rounded corners for the thumb */
   }
   
   #scrollContainer::-webkit-scrollbar-thumb:hover {
-    background-color: #503484; /* Darker purple on hover */
+    background-color: #843d34; /* Darker purple on hover */
   }
   
   #scrollContainer {
@@ -348,14 +356,14 @@ body, div {
   }
   
   body::-webkit-scrollbar-track {
-    background-color: #efeff1; /* Light gray track */
+    background-color: #f1efef; /* Light gray track */
   }
   
   body::-webkit-scrollbar-thumb {
-    background-color: #6441a51d; /* Twitch-like purple thumb */
+    background-color: rgba(198, 39, 39, 0.638); /* Twitch-like purple thumb */
     border-radius: 5px; /* Rounded corners for the thumb */
   }
   
   body::-webkit-scrollbar-thumb:hover {
-    background-color: #503484; /* Darker purple on hover */
+    background-color: rgb(236, 74, 62); /* Darker purple on hover */
   }

@@ -25,6 +25,10 @@ document.addEventListener("DOMContentLoaded", function () {
         storedChannels.forEach(([channelId, channelName, logoUrl]) => {
           const channelDiv = document.createElement("div");
           channelDiv.className = "channel-info";
+          channelDiv.style.cursor = "pointer"; // Change cursor to pointer on hover
+          channelDiv.addEventListener("click", function() {
+            chrome.tabs.create({ url: `https://www.youtube.com/channel/${channelId}/live` });
+          });
 
           const logo = document.createElement("img");
           logo.src = logoUrl;
@@ -43,11 +47,21 @@ document.addEventListener("DOMContentLoaded", function () {
             ? "live-status live"
             : "live-status not-live";
 
-          channelDiv.appendChild(logo);
-          channelDiv.appendChild(name);
-          channelDiv.appendChild(liveStatus);
+          // Add hover effect using CSS
+          channelDiv.addEventListener("mouseenter", function () {
+            channelDiv.classList.add("hovered");
+          });
 
-          statusDiv.appendChild(channelDiv);
+          channelDiv.addEventListener("mouseleave", function () {
+            channelDiv.classList.remove("hovered");
+          });
+
+  channelDiv.appendChild(logo);
+  channelDiv.appendChild(name);
+  channelDiv.appendChild(liveStatus);
+
+  statusDiv.appendChild(channelDiv);
+
         });
       }
     );
@@ -63,7 +77,6 @@ document.addEventListener("DOMContentLoaded", function () {
       refreshLiveChannels(); // Call this function to refresh the display
     }
   });
-
 
   // Show search section, hide live channels list and the showSearch button
   showSearchButton.addEventListener("click", function () {
