@@ -80,6 +80,16 @@ document.addEventListener("DOMContentLoaded", function () {
           );
         });
 
+    // Check if no channels were added and display the message
+    if (storedChannels.length === 0) {
+      const noChannelMsg = document.createElement("p");
+      noChannelMsg.textContent = "No YouTube channels added yet.";
+      noChannelMsg.style.fontFamily = 'Roboto, sans-serif';
+      noChannelMsg.style.fontSize = '17px';
+      noChannelMsg.style.color = 'grey';
+      statusDiv.appendChild(noChannelMsg);
+    }
+
         function showContextMenu(x, y, channelId) {
           const contextMenu = document.getElementById("customContextMenu");
           const menuWidth = contextMenu.offsetWidth;

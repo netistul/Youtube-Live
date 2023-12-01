@@ -35,6 +35,7 @@ body {
   flex-direction: column;
   align-items: center; /* Center children horizontally */
   justify-content: flex-start; /* Align children from the top */
+  height: 100vh;
   margin: 0;
   padding: 0;
   background-color: #181818;
@@ -364,7 +365,7 @@ div {
 /* AddChannelText Styling for Dark Theme */
 #addChannelText {
   font-size: 18px; /* Adjust the font size as needed */
-  text-align: center; /* Center align the text */
+  text-align: center !important; /* Center align the text */
   margin-top: 20px; /* Add some top margin for spacing */
   color: #ffffffb7; /* White text color for dark theme */
 }
@@ -385,12 +386,6 @@ div {
 /* Style the text like a YouTube header */
 #addChannelText::before {
   content: "";
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  background-size: cover;
-  margin-right: 10px; /* Space between icon and text */
-  vertical-align: middle;
 }
 
 /* Add a light gray border below the text */
