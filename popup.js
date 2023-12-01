@@ -80,15 +80,15 @@ document.addEventListener("DOMContentLoaded", function () {
           );
         });
 
-    // Check if no channels were added and display the message
-    if (storedChannels.length === 0) {
-      const noChannelMsg = document.createElement("p");
-      noChannelMsg.textContent = "No YouTube channels added yet.";
-      noChannelMsg.style.fontFamily = 'Roboto, sans-serif';
-      noChannelMsg.style.fontSize = '17px';
-      noChannelMsg.style.color = 'grey';
-      statusDiv.appendChild(noChannelMsg);
-    }
+        // Check if no channels were added and display the message
+        if (storedChannels.length === 0) {
+          const noChannelMsg = document.createElement("p");
+          noChannelMsg.textContent = "No YouTube channels added yet.";
+          noChannelMsg.style.fontFamily = "Roboto, sans-serif";
+          noChannelMsg.style.fontSize = "17px";
+          noChannelMsg.style.color = "grey";
+          statusDiv.appendChild(noChannelMsg);
+        }
 
         function showContextMenu(x, y, channelId) {
           const contextMenu = document.getElementById("customContextMenu");
@@ -305,7 +305,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function performSearch(endpoint) {
     // Clear any existing countdown interval
     clearInterval(countdownInterval);
-  
+
     // Only start the countdown if an API call is going to be made
     if (endpoint) {
       var timeInSeconds = 15;
@@ -315,7 +315,7 @@ document.addEventListener("DOMContentLoaded", function () {
           " seconds remaining..."
       );
       startCountdown(timeInSeconds, document.getElementById("statusMessage"));
-  
+
       fetch(endpoint)
         .then((response) => {
           if (!response.ok) {
@@ -346,7 +346,6 @@ document.addEventListener("DOMContentLoaded", function () {
       loadingSpinner.style.display = "none"; // Hide the loading spinner
     }
   }
-  
 
   // Event listener for the search button click
   searchButton.addEventListener("click", function () {
@@ -518,14 +517,12 @@ document.addEventListener("DOMContentLoaded", function () {
     var timer = duration;
     countdownInterval = setInterval(function () {
       var seconds = parseInt(timer % 60, 10);
-      display.textContent =
-        "Sending request to API endpoint, about " +
-        seconds +
-        " seconds remaining...";
-
+      display.textContent = "Sending request to API endpoint, about " + seconds + " seconds remaining...";
+  
       if (--timer < 0) {
         clearInterval(countdownInterval);
-        display.textContent = "";
+        // Update the message to indicate that it's taking longer than expected
+        display.textContent = "This is taking longer than it should. Just wait or try again...";
       }
     }, 1000);
   }

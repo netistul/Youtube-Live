@@ -266,10 +266,6 @@ div {
   filter: brightness(220%); /* Example of making the image brighter */
 }
 
-#backButton:hover {
-  background-color: #2d2d2d36; /* Background color change on hover */
-  border-radius: 5px
-}
 
 #backButton:hover img {
   opacity: 0.2; /* Example of changing the opacity */
@@ -280,11 +276,6 @@ div {
   display: block; /* Ensures the image fills the button */
   width: 100%; /* Full width of the button */
   height: 100%; /* Full height of the button */
-}
-
-#showSearch:hover {
-  background-color: #2d2d2d36;
-  border-radius: 5px
 }
 
 #backButton {
