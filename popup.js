@@ -198,7 +198,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   function searchYouTubeChannels(query) {
-    updateStatusMessage("Starting search for channels...");
     // Clear existing search results when a new search starts
     const searchResults = document.getElementById("searchResults");
     searchResults.innerHTML = "";
@@ -209,7 +208,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (isValidYouTubeUrl(query)) {
       const { type, id } = extractYouTubeId(query);
-      updateStatusMessage(`Extracting YouTube ID: ${id} to get channel name`);
 
       console.log("Extracted YouTube ID:", id, "Type:", type); // Log the extracted ID and type
 
@@ -238,6 +236,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     console.log("Constructed API endpoint:", endpoint); // Log the constructed API endpoint
+    updateStatusMessage("Performing text search for channels...");
 
     if (endpoint) {
       performSearch(endpoint);
@@ -294,45 +293,50 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function performSearch(endpoint) {
-    var timeInSeconds = 15;
-    updateStatusMessage(
-      "Sending request to API endpoint, about " +
-        timeInSeconds +
-        " seconds remaining..."
-    );
-    startCountdown(timeInSeconds, document.getElementById("statusMessage"));
-
-    fetch(endpoint)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(
-            "Network response was not ok: " + response.statusText
+    // Clear any existing countdown interval
+    clearInterval(countdownInterval);
+  
+    // Only start the countdown if an API call is going to be made
+    if (endpoint) {
+      var timeInSeconds = 15;
+      updateStatusMessage(
+        "Sending request to API endpoint, about " +
+          timeInSeconds +
+          " seconds remaining..."
+      );
+      startCountdown(timeInSeconds, document.getElementById("statusMessage"));
+  
+      fetch(endpoint)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(
+              "Network response was not ok: " + response.statusText
+            );
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log("API Response:", data); // Log the response data
+          displaySearchResults(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching search results:", error);
+          updateStatusMessage(
+            "An error occurred: " + error.message + "Try again now"
           );
-        }
-        return response.json();
-      })
-      .then((data) => {
-        clearInterval(countdownInterval);
-        console.log("API Response:", data); // Log the response data
-
-        // Clear the status message here, before displaying search results
-        updateStatusMessage("");
-
-        displaySearchResults(data);
-        loadingSpinner.style.display = "none"; // Hide the loading spinner
-      })
-      .catch((error) => {
-        console.error("Error fetching search results:", error);
-        clearInterval(countdownInterval);
-
-        // Clear the status message in case of an error
-        updateStatusMessage(
-          "An error occurred: " + error.message + "Try again now"
-        );
-
-        loadingSpinner.style.display = "none";
-      });
+        })
+        .finally(() => {
+          clearInterval(countdownInterval);
+          updateStatusMessage(""); // Clear the status message
+          loadingSpinner.style.display = "none"; // Hide the loading spinner
+        });
+    } else {
+      updateStatusMessage("No valid endpoint constructed.");
+      console.log("No valid endpoint constructed."); // Log when no valid endpoint is constructed
+      loadingSpinner.style.display = "none"; // Hide the loading spinner
+    }
   }
+  
 
   // Event listener for the search button click
   searchButton.addEventListener("click", function () {

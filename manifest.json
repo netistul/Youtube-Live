@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "YouTube Channel Live Checker",
+    "name": "YouTube Live",
     "version": "1.0",
     "permissions": ["activeTab", "storage", "alarms"],
     "host_permissions": [
