@@ -1,6 +1,6 @@
 # Youtube Live Extension
 
-YouTube Live is an extension that brings your subscribed YouTube channels into a clean, modern, YouTube-styled interface.
+YouTube Live is an extension that brings your favorite YouTube channels into a clean, modern, YouTube-styled interface.
 
 ## Official Extension
 
