@@ -120,6 +120,7 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   }
 
+
   function deleteChannel(channelId) {
     // Access local storage and remove the channel
     chrome.storage.local.get(["yt_live_channels_id"], function (result) {
@@ -138,6 +139,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.addEventListener("click", function (event) {
     document.getElementById("customContextMenu").style.display = "none";
+  });
+
+  // Listen for messages about login/consent issues
+  chrome.runtime.onMessage.addListener((message) => {
+    if (message.action === "loginRequired") {
+      // Display a detailed message in the popup UI using CSS classes
+      statusDiv.innerHTML = `
+      <p class='login-required-message'>
+        You need to be logged into YouTube or accept cookies to check live status.
+      </p>
+      <p class='login-required-instruction'>Go to youtube.com and login in.</p>
+      <p class='login-required-instruction'>
+        This extension can't check the live status of any channel if you aren't logged in on the YouTube website.
+      </p>
+    `;
+    }
   });
 
   // Initial call to load live channels list
@@ -311,8 +328,8 @@ document.addEventListener("DOMContentLoaded", function () {
       var timeInSeconds = 15;
       updateStatusMessage(
         "Sending request to API endpoint, about " +
-          timeInSeconds +
-          " seconds remaining..."
+        timeInSeconds +
+        " seconds remaining..."
       );
       startCountdown(timeInSeconds, document.getElementById("statusMessage"));
 
@@ -518,7 +535,7 @@ document.addEventListener("DOMContentLoaded", function () {
     countdownInterval = setInterval(function () {
       var seconds = parseInt(timer % 60, 10);
       display.textContent = "Sending request to API endpoint, about " + seconds + " seconds remaining...";
-  
+
       if (--timer < 0) {
         clearInterval(countdownInterval);
         // Update the message to indicate that it's taking longer than expected

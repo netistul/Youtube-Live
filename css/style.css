@@ -71,8 +71,8 @@ body {
 /* Faded effect for not-live channels */
 .channel-info.not-live {
   transition: opacity 0.3s ease;
-    opacity: 0.3; /* Apply reduced opacity */
-    transition: opacity 0.3s ease; /* Smooth transition for the opacity change */
+  opacity: 0.3; /* Apply reduced opacity */
+  transition: opacity 0.3s ease; /* Smooth transition for the opacity change */
 }
 
 .channel-info.not-live:hover {
@@ -82,8 +82,8 @@ body {
 /* Restore full opacity on hover for any channel */
 .channel-info:hover {
   transition: opacity 0.9s ease;
-    opacity: 1; /* Full opacity on hover */
-    background-color: #272727; /* Change to the desired background color */
+  opacity: 1; /* Full opacity on hover */
+  background-color: #272727; /* Change to the desired background color */
 }
 
 /* Additional styles */
@@ -103,10 +103,10 @@ body {
   flex-grow: 1; /* Allows the channel name to grow and use available space */
 }
 
-.channel-logo, .channel-name {
+.channel-logo,
+.channel-name {
   flex-shrink: 1;
 }
-
 
 .live-status {
   width: 50px; /* Fixed width for the live status */
@@ -126,11 +126,11 @@ body {
   opacity: 1; /* Ensure full opacity on hover */
 }
 
-.channel-logo, .live-status {
+.channel-logo,
+.live-status {
   flex-shrink: 0;
   flex-grow: 0;
 }
-
 
 /* Reset margins and paddings for body and div elements */
 body,
@@ -266,7 +266,6 @@ div {
   filter: brightness(220%); /* Example of making the image brighter */
 }
 
-
 #backButton:hover img {
   opacity: 0.2; /* Example of changing the opacity */
   filter: brightness(220%); /* Example of making the image brighter */
@@ -340,7 +339,7 @@ div {
 /* Styling for the add channel button */
 .add-channel-button {
   padding: 5px 10px; /* Adjust padding as needed */
-  background-color: #4CAF50; /* Example color */
+  background-color: #4caf50; /* Example color */
   color: white; /* Text color */
   border: none;
   border-radius: 5px; /* Rounded corners */
@@ -351,7 +350,6 @@ div {
 .add-channel-button:hover {
   background-color: #45a049; /* Darker shade on hover */
 }
-
 
 /* AddChannelText Styling for Dark Theme */
 #addChannelText {
@@ -437,6 +435,21 @@ div {
   background-color: #383838; /* Slightly lighter shade for hover */
 }
 
+.login-required-message {
+  font-family: "Roboto", "Arial", sans-serif;
+  color: red;
+  font-size: 18px; /* Adjust as needed */
+  font-weight: bold; /* Make it bold */
+  margin: 10px 0; /* Add some spacing */
+  text-align: center; /* Center the text */
+}
+
+.login-required-instruction {
+  font-family: "Roboto", "Arial", sans-serif;
+  margin: 10px 0; /* Add some spacing for other paragraphs */
+  font-size: 15px;
+  text-align: center;
+}
 
 @font-face {
   font-family: "Roboto";
@@ -495,4 +508,3 @@ body::-webkit-scrollbar-thumb {
 body::-webkit-scrollbar-thumb:hover {
   background-color: #843d34; /* Darker color on hover */
 }
-

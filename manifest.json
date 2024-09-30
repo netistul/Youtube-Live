@@ -1,12 +1,10 @@
 {
   "manifest_version": 3,
   "name": "YouTube Live",
-  "version": "1.1",
-  "description": "YouTube Live is an extension that brings your favorite YouTube channels into a clean, modern, YouTube-styled interface.",
+  "version": "1.2",
+  "description": "YouTube Live is an extension that brings your favorite YouTube LIVE channels into a clean, modern, YouTube-styled interface.",
   "permissions": ["activeTab", "storage", "alarms"],
-  "host_permissions": [
-    "*://*.youtube.com/*"
-  ],
+  "host_permissions": ["*://*.youtube.com/*"],
   "action": {
     "default_popup": "popup.html"
   },

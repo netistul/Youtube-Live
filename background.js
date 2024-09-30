@@ -2,18 +2,46 @@ async function checkYouTubeChannelLive(channelId) {
   console.log(`Checking live status for channel ID: ${channelId}`);
 
   try {
-    const response = await fetch(
-      `https://www.youtube.com/channel/${channelId}`
-    );
+    // Fetch the /live page for the channel
+    const response = await fetch(`https://www.youtube.com/channel/${channelId}/live`, { redirect: 'follow' });
     const html = await response.text();
-    const isLive = html.includes("hqdefault_live.jpg");
-    console.log(`Channel ID ${channelId} is live: ${isLive}`);
-    return isLive;
+
+    // Log the response URL in case there is a redirection
+    console.log(`Fetched URL: ${response.url}`);
+
+    // Check if the URL indicates a consent or login-required page
+    if (response.url.includes("consent.youtube.com")) {
+      console.error("User is not logged in or consent not accepted");
+      // Notify the popup about the consent/login issue
+      chrome.runtime.sendMessage({ action: "loginRequired" });
+      return false; // Return false since the status cannot be determined
+    }
+
+    // Check if the URL itself redirects to a live video page
+    if (response.url.includes("/watch?v=")) {
+      console.log(`Channel ID ${channelId} is live: true`);
+      return true;
+    }
+
+    // If not, use regex to extract the canonical URL from the HTML
+    const canonicalMatch = html.match(/<link rel="canonical" href="([^"]+)"/);
+
+    if (canonicalMatch && canonicalMatch[1]) {
+      const canonicalURL = canonicalMatch[1];
+      const isLive = canonicalURL.includes("/watch?v=");
+
+      console.log(`Channel ID ${channelId} is live: ${isLive}`);
+      return isLive;
+    } else {
+      console.error(`Canonical link not found for channel ID ${channelId}`);
+      return false;
+    }
   } catch (error) {
     console.error("Error checking channel live status:", error);
     return false;
   }
 }
+
 
 function checkAllChannels(fromPopup = false) {
   console.log("Checking all channels for live status...");

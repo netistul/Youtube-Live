@@ -9,7 +9,7 @@
       YouTube Live
       <button id="showSearch">
         <img src="css/add.svg" alt="Add" />
-    </button>
+      </button>
     </div>
     <div id="status">
       Checking channels...
@@ -17,32 +17,41 @@
         <!-- Channel info elements will be dynamically appended here -->
       </div>
     </div>
-    <div id="customContextMenu" style="display: none; position: absolute; z-index: 1000; background-color: white; border: 1px solid black;">
+    <div
+      id="customContextMenu"
+      style="
+        display: none;
+        position: absolute;
+        z-index: 1000;
+        background-color: white;
+        border: 1px solid black;
+      "
+    >
       <ul>
-          <li id="deleteChannel">Delete Channel</li>
+        <li id="deleteChannel">Delete Channel</li>
       </ul>
-  </div>
+    </div>
     <div id="searchSection" style="display: none">
-        <button id="backButton">
-            <img src="css/back.svg" alt="Back" />
-        </button>    
-        <div class="searchContainer"> <!-- New container for input and button -->
-          <input
-            type="text"
-            id="searchInput"
-            placeholder="YouTube channel name, channel link or video link"
-            autocomplete="off"
-          />
-          <button id="searchButton">
-            <img src="css/searchicon.svg" alt="Search" />
-          </button>
-        </div>
-        <div id="searchResults">
-            <div id="addChannelText">
-                Type below to add a YouTube channel to your list
-            </div>
+      <button id="backButton">
+        <img src="css/back.svg" alt="Back" />
+      </button>
+      <div class="searchContainer">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="YouTube channel name, channel link or video link"
+          autocomplete="off"
+        />
+        <button id="searchButton">
+          <img src="css/searchicon.svg" alt="Search" />
+        </button>
+      </div>
+      <div id="searchResults">
+        <div id="addChannelText">
+          Type below to add a YouTube channel to your list
         </div>
       </div>
+    </div>
     <script src="popup.js"></script>
   </body>
 </html>
