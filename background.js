@@ -12,15 +12,20 @@ async function checkYouTubeChannelLive(channelId) {
     // Check if the URL indicates a consent or login-required page
     if (response.url.includes("consent.youtube.com")) {
       console.error("User is not logged in or consent not accepted");
-      // Notify the popup about the consent/login issue
       chrome.runtime.sendMessage({ action: "loginRequired" });
-      return false; // Return false since the status cannot be determined
+      return false;
     }
 
-    // Check if the URL itself redirects to a live video page
-    if (response.url.includes("/watch?v=")) {
-      console.log(`Channel ID ${channelId} is live: true`);
+    // If the response contains "LIVE NOW", it indicates that the stream is currently live
+    if (html.includes("LIVE NOW")) {
+      console.log(`Channel ID ${channelId} is live: true (reason: found 'LIVE NOW')`);
       return true;
+    }
+
+    // Scheduled streams might have "Scheduled for" in the HTML, so check and return false for those
+    if (html.includes("Scheduled for")) {
+      console.log(`Channel ID ${channelId} is not live: false (reason: found 'Scheduled for')`);
+      return false;
     }
 
     // If not, use regex to extract the canonical URL from the HTML
@@ -28,9 +33,14 @@ async function checkYouTubeChannelLive(channelId) {
 
     if (canonicalMatch && canonicalMatch[1]) {
       const canonicalURL = canonicalMatch[1];
-      const isLive = canonicalURL.includes("/watch?v=");
+      const isLive = canonicalURL.includes("/watch?v=") && !html.includes("Scheduled for");
 
-      console.log(`Channel ID ${channelId} is live: ${isLive}`);
+      if (isLive) {
+        console.log(`Channel ID ${channelId} is live: true (reason: redirected to a live video page and no 'Scheduled for' found)`);
+      } else {
+        console.log(`Channel ID ${channelId} is not live: false (reason: not redirected to a live video page or 'Scheduled for' was found)`);
+      }
+
       return isLive;
     } else {
       console.error(`Canonical link not found for channel ID ${channelId}`);
