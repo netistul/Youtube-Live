@@ -16,34 +16,17 @@ async function checkYouTubeChannelLive(channelId) {
       return false;
     }
 
-    // If the response contains "LIVE NOW", it indicates that the stream is currently live
-    if (html.includes("LIVE NOW")) {
-      console.log(`Channel ID ${channelId} is live: true (reason: found 'LIVE NOW')`);
+    // Count occurrences of "isLive": true in the HTML
+    const liveCount = (html.match(/"isLive":\s*true/g) || []).length;
+
+    if (liveCount === 2) {
+      console.log(`Channel ID ${channelId} is live: true (reason: found 2 instances of 'isLive': true)`);
       return true;
-    }
-
-    // Scheduled streams might have "Scheduled for" in the HTML, so check and return false for those
-    if (html.includes("Scheduled for")) {
-      console.log(`Channel ID ${channelId} is not live: false (reason: found 'Scheduled for')`);
+    } else if (liveCount === 1) {
+      console.log(`Channel ID ${channelId} is not live: false (reason: found 1 instance of 'isLive': true, indicating a scheduled stream)`);
       return false;
-    }
-
-    // If not, use regex to extract the canonical URL from the HTML
-    const canonicalMatch = html.match(/<link rel="canonical" href="([^"]+)"/);
-
-    if (canonicalMatch && canonicalMatch[1]) {
-      const canonicalURL = canonicalMatch[1];
-      const isLive = canonicalURL.includes("/watch?v=") && !html.includes("Scheduled for");
-
-      if (isLive) {
-        console.log(`Channel ID ${channelId} is live: true (reason: redirected to a live video page and no 'Scheduled for' found)`);
-      } else {
-        console.log(`Channel ID ${channelId} is not live: false (reason: not redirected to a live video page or 'Scheduled for' was found)`);
-      }
-
-      return isLive;
     } else {
-      console.error(`Canonical link not found for channel ID ${channelId}`);
+      console.log(`Channel ID ${channelId} is not live: false (reason: no instances of 'isLive': true found)`);
       return false;
     }
   } catch (error) {
@@ -51,7 +34,6 @@ async function checkYouTubeChannelLive(channelId) {
     return false;
   }
 }
-
 
 function checkAllChannels(fromPopup = false) {
   console.log("Checking all channels for live status...");
