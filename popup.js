@@ -195,7 +195,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Setup for debouncing the search input
   let typingTimer;
-  const doneTypingInterval = 1000; // 1000ms = 1 second
+  const doneTypingInterval = 1400; // 1400ms = 1.4 seconds
 
   // Event listener for the search button click
   searchButton.addEventListener("click", function () {
@@ -246,32 +246,27 @@ document.addEventListener("DOMContentLoaded", function () {
         // Check if the ID looks like a custom name
         if (isLikelyCustomName(id)) {
           // Use search endpoint for custom names
-          endpoint = `http:///51.38.179.70:5110/search?part=id,snippet&type=channel&q=${encodeURIComponent(
-            id
-          )}&maxResults=${maxResults}`;
+          endpoint = `http://51.38.179.70:5110/youtube/search?part=snippet&type=channel&q=${encodeURIComponent(id)}&maxResults=${maxResults}`;
         } else {
           // Use channels endpoint for direct channel ID
-          endpoint = `http:///51.38.179.70:5110/channels?id=${id}&part=snippet,contentDetails,statistics&maxResults=${maxResults}`;
+          endpoint = `http://51.38.179.70:5110/channels?id=${id}&part=snippet,contentDetails,statistics&maxResults=${maxResults}`;
           updateStatusMessage("Constructed API endpoint for text search.");
         }
       }
     } else {
       // Regular text search for channels
-      endpoint = `http:///51.38.179.70:5110/search?part=id,snippet&type=channel&q=${encodeURIComponent(
-        query
-      )}&maxResults=${maxResults}`;
+      endpoint = `http://51.38.179.70:5110/youtube/search?part=snippet&type=channel&q=${encodeURIComponent(query)}&maxResults=${maxResults}`;
     }
 
     console.log("Constructed API endpoint:", endpoint); // Log the constructed API endpoint
-    updateStatusMessage("Performing text search for channels...");
 
-    if (endpoint) {
-      performSearch(endpoint);
-    } else {
-      updateStatusMessage("No valid endpoint constructed.");
-      console.log("No valid endpoint constructed."); // Log when no valid endpoint is constructed
-      loadingSpinner.style.display = "none"; // Hide the loading spinner
+    if (!endpoint) {
+      updateStatusMessage("Failed to construct a valid API endpoint.");
+      return;
     }
+
+    // Perform the search
+    performSearch(endpoint);
     updateStatusMessage("");
   }
 
@@ -336,25 +331,54 @@ document.addEventListener("DOMContentLoaded", function () {
       fetch(endpoint)
         .then((response) => {
           if (!response.ok) {
-            throw new Error(
-              "Network response was not ok: " + response.statusText
-            );
+            // If response is not okay, return a custom error
+            return response.json().then(errData => {
+              throw new Error(errData.error || "Network response was not ok.");
+            });
           }
           return response.json();
         })
         .then((data) => {
           console.log("API Response:", data); // Log the response data
+
+          // Check if the response has 'items' and is an array
+          if (!data || !data.items || !Array.isArray(data.items)) {
+            console.error("Unexpected API response format:", data);
+            updateStatusMessage("No valid data received. Try again later.");
+            return;
+          }
+
           displaySearchResults(data);
         })
         .catch((error) => {
           console.error("Error fetching search results:", error);
-          updateStatusMessage(
-            "An error occurred: " + error.message + "Try again now"
-          );
+
+          // Check if the error message indicates unauthorized access
+          if (error.message.includes("Unauthorized access")) {
+            updateStatusMessage("Unauthorized access. Please use the appropriate Chrome extension.");
+          } else if (error.message.includes("Rate limit exceeded")) {
+            // Start a 60-second countdown for rate limit errors
+            let secondsLeft = 60;
+            updateStatusMessage(`Rate limit exceeded. Please try again in ${secondsLeft} seconds.`);
+
+            countdownInterval = setInterval(() => {
+              secondsLeft--;
+              if (secondsLeft > 0) {
+                updateStatusMessage(`Rate limit exceeded. Please try again in ${secondsLeft} seconds.`);
+              } else {
+                clearInterval(countdownInterval);
+                updateStatusMessage("You can now try your search again.");
+              }
+            }, 1000);
+          } else {
+            updateStatusMessage("An error occurred: " + error.message + ". Please try again.");
+          }
         })
         .finally(() => {
-          clearInterval(countdownInterval);
-          updateStatusMessage(""); // Clear the status message
+          if (!countdownInterval) {
+            clearInterval(countdownInterval);
+            updateStatusMessage(""); // Clear the status message
+          }
           loadingSpinner.style.display = "none"; // Hide the loading spinner
         });
     } else {
@@ -436,15 +460,14 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-
   function displaySearchResults(data) {
     const searchResults = document.getElementById("searchResults");
     searchResults.innerHTML = ""; // Clear previous results
 
     if (data.items && Array.isArray(data.items) && data.items.length > 0) {
       data.items.forEach((item) => {
-        if (item.id.kind === "youtube#channel") {
-          // Create main container for each item
+        if (item.id && item.id.kind === "youtube#channel") {
+          // Handle channel search result
           const div = document.createElement("div");
           div.className = "search-result-item";
 
@@ -486,18 +509,18 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
     } else {
-      // Display a message when no channels are found
+      // Display a message when no results are found
       const noResultsMsg = document.createElement("div");
       noResultsMsg.className = "no-results-message";
       noResultsMsg.innerHTML = `
-      <p>No channels found. Please try a different search.</p>
-      <p class="search-examples">
-          E.g.,<br>
-          For channel name: <span class="example">MrBeast</span><br>
-          Channel link: <span class="example">https://www.youtube.com/@MrBeast</span><br>
-          Or a YouTube link from that channel: <span class="example">https://www.youtube.com/watch?v=Wdjh81uH6FU</span>
-      </p>
-    `;
+        <p>No results found. Please try a different search.</p>
+        <p class="search-examples">
+            E.g.,<br>
+            For channel name: <span class="example">MrBeast</span><br>
+            Channel link: <span class="example">https://www.youtube.com/@MrBeast</span><br>
+            Or a YouTube link from that channel: <span class="example">https://www.youtube.com/watch?v=Wdjh81uH6FU</span>
+        </p>
+      `;
       searchResults.appendChild(noResultsMsg);
     }
 
