@@ -246,18 +246,18 @@ document.addEventListener("DOMContentLoaded", function () {
         // Check if the ID looks like a custom name
         if (isLikelyCustomName(id)) {
           // Use search endpoint for custom names
-          endpoint = `https://yt.lemnoslife.com/noKey/search?part=id,snippet&type=channel&q=${encodeURIComponent(
+          endpoint = `http:///51.38.179.70:5110/search?part=id,snippet&type=channel&q=${encodeURIComponent(
             id
           )}&maxResults=${maxResults}`;
         } else {
           // Use channels endpoint for direct channel ID
-          endpoint = `https://yt.lemnoslife.com/noKey/channels?id=${id}&part=snippet,contentDetails,statistics&maxResults=${maxResults}`;
+          endpoint = `http:///51.38.179.70:5110/channels?id=${id}&part=snippet,contentDetails,statistics&maxResults=${maxResults}`;
           updateStatusMessage("Constructed API endpoint for text search.");
         }
       }
     } else {
       // Regular text search for channels
-      endpoint = `https://yt.lemnoslife.com/noKey/search?part=id,snippet&type=channel&q=${encodeURIComponent(
+      endpoint = `http:///51.38.179.70:5110/search?part=id,snippet&type=channel&q=${encodeURIComponent(
         query
       )}&maxResults=${maxResults}`;
     }
@@ -387,7 +387,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   function fetchVideoDetails(videoId, callback) {
-    const videoEndpoint = `https://yt.lemnoslife.com/noKey/videos?id=${videoId}&part=snippet`;
+    const videoEndpoint = `http://51.38.179.70:5110/videos?id=${videoId}&part=snippet`;
 
     fetch(videoEndpoint)
       .then((response) => response.json())
@@ -409,7 +409,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function displayChannelFromVideo(channelId) {
-    const channelEndpoint = `https://yt.lemnoslife.com/noKey/channels?id=${channelId}&part=snippet,contentDetails,statistics&maxResults=1`;
+    const channelEndpoint = `http://51.38.179.70:5110/channels?id=${channelId}&part=snippet,contentDetails,statistics&maxResults=1`;
 
     fetch(channelEndpoint)
       .then((response) => response.json())
@@ -435,6 +435,7 @@ document.addEventListener("DOMContentLoaded", function () {
         loadingSpinner.style.display = "none"; // Hide the spinner
       });
   }
+
 
   function displaySearchResults(data) {
     const searchResults = document.getElementById("searchResults");
