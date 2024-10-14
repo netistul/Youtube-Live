@@ -388,17 +388,17 @@ div {
 }
 
 #statusMessage {
-  background-color: rgb(86, 1, 7); /* PowerShell background color */
-  color: #ffffff; /* Text color */
-  font-family: "Consolas", "Courier New", monospace; /* Monospace font for console appearance */
+  background-color: rgb(86, 1, 7);
+  color: #ffffff;
+  font-family: "Consolas", "Courier New", monospace;
   padding: 10px;
   border-radius: 4px;
-  margin-top: 10px; /* Adjust based on your layout */
-  min-height: 20px; /* Minimum height */
-  width: 95%; /* Adjust as necessary */
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5); /* Optional: adds depth */
-  word-wrap: break-word; /* Ensure long messages don't overflow */
-  font-size: 0.9em;
+  margin-top: 10px;
+  min-height: 30px; /* Increase the minimum height */
+  width: 95%;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+  word-wrap: break-word;
+  font-size: 1.2em;
   max-height: 150px;
 }
 

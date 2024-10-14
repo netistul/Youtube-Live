@@ -315,23 +315,16 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function performSearch(endpoint) {
-    // Clear any existing countdown interval
-    clearInterval(countdownInterval);
+    clearGlobalTimer();
+    currentMessagePriority = PRIORITY.LOW;
 
-    // Only start the countdown if an API call is going to be made
     if (endpoint) {
-      var timeInSeconds = 15;
-      updateStatusMessage(
-        "Sending request to API endpoint, about " +
-        timeInSeconds +
-        " seconds remaining..."
-      );
-      startCountdown(timeInSeconds, document.getElementById("statusMessage"));
+      startCountdown(15, "Sending request to API endpoint, about", PRIORITY.LOW, "remaining");
+      loadingSpinner.style.display = "block";
 
       fetch(endpoint)
         .then((response) => {
           if (!response.ok) {
-            // If response is not okay, return a custom error
             return response.json().then(errData => {
               throw new Error(errData.error || "Network response was not ok.");
             });
@@ -339,52 +332,34 @@ document.addEventListener("DOMContentLoaded", function () {
           return response.json();
         })
         .then((data) => {
-          console.log("API Response:", data); // Log the response data
-
-          // Check if the response has 'items' and is an array
+          console.log("API Response:", data);
           if (!data || !data.items || !Array.isArray(data.items)) {
             console.error("Unexpected API response format:", data);
-            updateStatusMessage("No valid data received. Try again later.");
+            updateStatusMessage("No valid data received. Try again later.", PRIORITY.HIGH);
             return;
           }
-
           displaySearchResults(data);
+          updateStatusMessage("", PRIORITY.LOW); // Clear status on success
         })
         .catch((error) => {
           console.error("Error fetching search results:", error);
 
-          // Check if the error message indicates unauthorized access
           if (error.message.includes("Unauthorized access")) {
-            updateStatusMessage("Unauthorized access. Please use the appropriate Chrome extension.");
+            updateStatusMessage("Unauthorized access. Please use the appropriate Chrome extension.", PRIORITY.HIGH);
           } else if (error.message.includes("Rate limit exceeded")) {
-            // Start a 60-second countdown for rate limit errors
-            let secondsLeft = 60;
-            updateStatusMessage(`Rate limit exceeded. Please try again in ${secondsLeft} seconds.`);
-
-            countdownInterval = setInterval(() => {
-              secondsLeft--;
-              if (secondsLeft > 0) {
-                updateStatusMessage(`Rate limit exceeded. Please try again in ${secondsLeft} seconds.`);
-              } else {
-                clearInterval(countdownInterval);
-                updateStatusMessage("You can now try your search again.");
-              }
-            }, 1000);
+            startCountdown(60, "Rate limit exceeded. Please try again in", PRIORITY.HIGH, "", "Rate limit expired. You can now try your search again.");
           } else {
-            updateStatusMessage("An error occurred: " + error.message + ". Please try again.");
+            updateStatusMessage("YouTube API error: " + error.message +
+              ".<br/><br/>Try adding the YouTube channel ID or any video link from that channel directly here; it might work.", PRIORITY.HIGH);
           }
         })
         .finally(() => {
-          if (!countdownInterval) {
-            clearInterval(countdownInterval);
-            updateStatusMessage(""); // Clear the status message
-          }
-          loadingSpinner.style.display = "none"; // Hide the loading spinner
+          loadingSpinner.style.display = "none";
         });
     } else {
-      updateStatusMessage("No valid endpoint constructed.");
-      console.log("No valid endpoint constructed."); // Log when no valid endpoint is constructed
-      loadingSpinner.style.display = "none"; // Hide the loading spinner
+      updateStatusMessage("No valid endpoint constructed.", PRIORITY.MEDIUM);
+      console.log("No valid endpoint constructed.");
+      loadingSpinner.style.display = "none";
     }
   }
 
@@ -460,6 +435,68 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
+  let lastStatusMessage = ""; // Variable to track the last status message
+
+  // Global variables
+  let currentMessagePriority = 0;
+  let globalTimer = null;
+  const PRIORITY = {
+    LOW: 0,
+    MEDIUM: 1,
+    HIGH: 2
+  };
+
+  function updateStatusMessage(message, priority = PRIORITY.LOW) {
+    let statusDiv = document.getElementById("statusMessage");
+
+    if (!statusDiv) {
+      statusDiv = document.createElement("div");
+      statusDiv.id = "statusMessage";
+      statusDiv.style = "color: grey; margin-bottom: 10px;";
+
+      const spinner = document.getElementById("loadingSpinner");
+      if (spinner) {
+        spinner.parentNode.insertBefore(statusDiv, spinner.nextSibling);
+      } else {
+        document.body.insertBefore(statusDiv, document.body.firstChild);
+      }
+    }
+
+    // Only update if the new message has higher or equal priority
+    if (priority >= currentMessagePriority) {
+      statusDiv.innerHTML = message;
+      currentMessagePriority = priority;
+    }
+  }
+
+  function clearGlobalTimer() {
+    if (globalTimer) {
+      clearTimeout(globalTimer);
+      globalTimer = null;
+    }
+  }
+
+  function startCountdown(duration, message, priority, suffix = "", finalMessage = "") {
+    clearGlobalTimer();
+    let timer = duration;
+
+    function updateCountdown() {
+      if (timer > 0) {
+        // Add space before suffix only if suffix is not empty
+        const suffixText = suffix ? ` ${suffix}` : "";
+        updateStatusMessage(`${message} ${timer} seconds${suffixText}...`, priority);
+        timer--;
+        globalTimer = setTimeout(updateCountdown, 1000);
+      } else {
+        // Show the final message when the countdown ends
+        updateStatusMessage(finalMessage || "You can now try your search again.", priority);
+        clearGlobalTimer();
+      }
+    }
+
+    updateCountdown();
+  }
+
   function displaySearchResults(data) {
     const searchResults = document.getElementById("searchResults");
     searchResults.innerHTML = ""; // Clear previous results
@@ -513,59 +550,21 @@ document.addEventListener("DOMContentLoaded", function () {
       const noResultsMsg = document.createElement("div");
       noResultsMsg.className = "no-results-message";
       noResultsMsg.innerHTML = `
-        <p>No results found. Please try a different search.</p>
-        <p class="search-examples">
-            E.g.,<br>
-            For channel name: <span class="example">MrBeast</span><br>
-            Channel link: <span class="example">https://www.youtube.com/@MrBeast</span><br>
-            Or a YouTube link from that channel: <span class="example">https://www.youtube.com/watch?v=Wdjh81uH6FU</span>
-        </p>
-      `;
+              <p>No results found. Please try a different search.</p>
+              <p class="search-examples">
+                  E.g.,<br>
+                  For channel name: <span class="example">MrBeast</span><br>
+                  Channel link: <span class="example">https://www.youtube.com/@MrBeast</span><br>
+                  Or a YouTube link from that channel: <span class="example">https://www.youtube.com/watch?v=Wdjh81uH6FU</span>
+              </p>
+          `;
       searchResults.appendChild(noResultsMsg);
     }
 
-    // Clear the status message
-    updateStatusMessage("");
-  }
-
-  function updateStatusMessage(message) {
-    let statusDiv = document.getElementById("statusMessage");
-
-    if (!statusDiv) {
-      // Create the status div if it doesn't exist
-      statusDiv = document.createElement("div");
-      statusDiv.id = "statusMessage";
-      statusDiv.style = "color: grey; margin-bottom: 10px;"; // Add your styling here
-
-      // Assuming you have a spinner with the ID 'loadingSpinner'
-      const spinner = document.getElementById("loadingSpinner");
-      if (spinner) {
-        // Insert the statusDiv after the spinner
-        spinner.parentNode.insertBefore(statusDiv, spinner.nextSibling);
-      } else {
-        // Insert the statusDiv at the beginning of the body
-        document.body.insertBefore(statusDiv, document.body.firstChild);
-      }
+    // Clear the status message if it was not an error
+    if (!lastStatusMessage.includes("error")) {
+      updateStatusMessage("");
     }
-
-    // Update the text content of the statusDiv
-    statusDiv.textContent = message;
-  }
-
-  var countdownInterval;
-
-  function startCountdown(duration, display) {
-    var timer = duration;
-    countdownInterval = setInterval(function () {
-      var seconds = parseInt(timer % 60, 10);
-      display.textContent = "Sending request to API endpoint, about " + seconds + " seconds remaining...";
-
-      if (--timer < 0) {
-        clearInterval(countdownInterval);
-        // Update the message to indicate that it's taking longer than expected
-        display.textContent = "This is taking longer than it should. Just wait or try again...";
-      }
-    }, 1000);
   }
 
   // Function to add channel to local storage
