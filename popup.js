@@ -163,8 +163,8 @@ document.addEventListener("DOMContentLoaded", function () {
   // messages from background.js
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "checkComplete") {
-      // Refresh the content or popup
-      refreshLiveChannels(); // Call this function to refresh the display
+      updateStatusMessage("", PRIORITY.LOW); // Clear any existing status messages
+      refreshLiveChannels(); // Refresh the display
     }
   });
 
@@ -229,7 +229,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const searchResults = document.getElementById("searchResults");
     searchResults.innerHTML = "";
     let endpoint;
-    const maxResults = 5; // Set the number of results per page
+    const maxResults = 15; // Set the number of results per page
 
     console.log("Query received for search:", query); // Log the received query
 
@@ -319,7 +319,7 @@ document.addEventListener("DOMContentLoaded", function () {
     currentMessagePriority = PRIORITY.LOW;
 
     if (endpoint) {
-      startCountdown(15, "Sending request to API endpoint, about", PRIORITY.LOW, "remaining");
+      const stopCountdown = startCountdown(15, "Sending request to API endpoint, about", PRIORITY.LOW, "remaining");
       loadingSpinner.style.display = "block";
 
       fetch(endpoint)
@@ -333,16 +333,17 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then((data) => {
           console.log("API Response:", data);
+          stopCountdown(); // Stop the countdown when we receive a response
           if (!data || !data.items || !Array.isArray(data.items)) {
             console.error("Unexpected API response format:", data);
             updateStatusMessage("No valid data received. Try again later.", PRIORITY.HIGH);
             return;
           }
           displaySearchResults(data);
-          updateStatusMessage("", PRIORITY.LOW); // Clear status on success
         })
         .catch((error) => {
           console.error("Error fetching search results:", error);
+          stopCountdown(); // Stop the countdown on error
 
           if (error.message.includes("Unauthorized access")) {
             updateStatusMessage("Unauthorized access. Please use the appropriate Chrome extension.", PRIORITY.HIGH);
@@ -446,7 +447,7 @@ document.addEventListener("DOMContentLoaded", function () {
     HIGH: 2
   };
 
-  function updateStatusMessage(message, priority = PRIORITY.LOW) {
+  function updateStatusMessage(message, priority = PRIORITY.LOW, duration = 0) {
     let statusDiv = document.getElementById("statusMessage");
 
     if (!statusDiv) {
@@ -466,6 +467,16 @@ document.addEventListener("DOMContentLoaded", function () {
     if (priority >= currentMessagePriority) {
       statusDiv.innerHTML = message;
       currentMessagePriority = priority;
+
+      // Clear the message after the specified duration
+      if (duration > 0) {
+        setTimeout(() => {
+          if (currentMessagePriority === priority) {
+            statusDiv.innerHTML = "";
+            currentMessagePriority = 0;
+          }
+        }, duration * 1000);
+      }
     }
   }
 
@@ -482,19 +493,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function updateCountdown() {
       if (timer > 0) {
-        // Add space before suffix only if suffix is not empty
         const suffixText = suffix ? ` ${suffix}` : "";
         updateStatusMessage(`${message} ${timer} seconds${suffixText}...`, priority);
         timer--;
         globalTimer = setTimeout(updateCountdown, 1000);
       } else {
-        // Show the final message when the countdown ends
-        updateStatusMessage(finalMessage || "You can now try your search again.", priority);
+        updateStatusMessage(finalMessage || "", priority);
         clearGlobalTimer();
       }
     }
 
     updateCountdown();
+
+    // Return a function to stop the countdown
+    return function stopCountdown() {
+      clearGlobalTimer();
+      updateStatusMessage("", priority);
+    };
   }
 
   function displaySearchResults(data) {
@@ -574,7 +589,10 @@ document.addEventListener("DOMContentLoaded", function () {
       channels.push([channelId, channelName, logoUrl]);
       chrome.storage.local.set({ yt_live_channels_id: channels }, function () {
         console.log(`Channel ${channelName} added to live check list.`);
-        refreshLiveChannels(); // Refresh the list after adding a channel
+        refreshLiveChannels();
+
+        // Clear existing status messages and show success message
+        updateStatusMessage(`Channel ${channelName} added successfully!`, PRIORITY.MEDIUM, 3);
 
         // Redirect back to the main menu (live channels list)
         searchSection.style.display = "none";
@@ -582,10 +600,12 @@ document.addEventListener("DOMContentLoaded", function () {
         showSearchButton.style.display = "block";
 
         // Send a message to background.js to check all channels after a delay
-        chrome.runtime.sendMessage({
-          action: "checkAllChannels",
-          fromPopup: true,
-        });
+        setTimeout(() => {
+          chrome.runtime.sendMessage({
+            action: "checkAllChannels",
+            fromPopup: true,
+          });
+        }, 1000); // Delay of 1 second
       });
     });
   }
