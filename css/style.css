@@ -17,6 +17,7 @@
   position: sticky;
   top: 0;
   z-index: 1000; /* Ensures it's above other elements */
+  box-sizing: border-box;
 }
 
 /* Add a light gray border below the header */
@@ -27,6 +28,21 @@
   height: 1px;
   background-color: #404040; /* Use the same light gray border color */
   margin-top: 10px;
+}
+.header {
+  width: calc(100% - 3px); /* Subtract scrollbar width */
+  position: relative; /* Changed to relative for proper border positioning */
+}
+
+/* Modified border styling */
+.header::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: #404040;
 }
 
 /* General body styling for consistency */
