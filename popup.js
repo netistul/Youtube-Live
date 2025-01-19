@@ -27,9 +27,25 @@ document.addEventListener("DOMContentLoaded", function () {
         storedChannels.forEach(([channelId, channelName, logoUrl]) => {
           const channelDiv = document.createElement("div");
           channelDiv.className = "channel-info";
-          channelDiv.classList.add(
-            liveChannels[channelName] ? "live" : "not-live"
-          );
+          channelDiv.classList.add(liveChannels[channelName] ? "live" : "not-live");
+
+          const logo = document.createElement("img");
+          logo.src = logoUrl;
+          logo.alt = `${channelName} Logo`;
+          logo.className = "channel-logo";
+
+          // Add error handler for avatar
+          logo.onerror = function () {
+            console.log(`Avatar loading failed for ${channelName}, attempting to refresh...`);
+            refreshChannelAvatar(channelId)
+              .then(newUrl => {
+                console.log(`Got new URL for ${channelName}:`, newUrl);
+                logo.src = newUrl;
+              })
+              .catch(error => {
+                console.error('Error refreshing avatar:', error);
+              });
+          };
           channelDiv.style.cursor = "pointer"; // Change cursor to pointer on hover
           channelDiv.addEventListener("click", function () {
             chrome.tabs.create({
@@ -37,7 +53,6 @@ document.addEventListener("DOMContentLoaded", function () {
             });
           });
 
-          const logo = document.createElement("img");
           logo.src = logoUrl;
           logo.alt = `${channelName} Logo`;
           logo.className = "channel-logo";
@@ -434,6 +449,42 @@ document.addEventListener("DOMContentLoaded", function () {
         );
         loadingSpinner.style.display = "none"; // Hide the spinner
       });
+  }
+
+  // Function to handle avatar refresh
+  async function refreshChannelAvatar(channelId) {
+    try {
+      // Fetch new avatar URL from API
+      const endpoint = `http://51.38.179.70:5110/channels?id=${channelId}&part=snippet`;
+      const response = await fetch(endpoint);
+      const data = await response.json();
+
+      // Validate API response
+      if (!data.items?.[0]?.snippet?.thumbnails?.default?.url) {
+        throw new Error('No avatar URL found in API response');
+      }
+
+      const newAvatarURL = data.items[0].snippet.thumbnails.default.url;
+
+      // Get current channels from storage
+      const result = await chrome.storage.local.get(['yt_live_channels_id']);
+      let channels = result.yt_live_channels_id || [];
+
+      // Update the avatar URL for the matching channel
+      channels = channels.map(channel =>
+        channel[0] === channelId ? [channel[0], channel[1], newAvatarURL] : channel
+      );
+
+      // Save updated channels back to storage
+      await chrome.storage.local.set({ 'yt_live_channels_id': channels });
+
+      console.log(`Successfully refreshed avatar for channel ${channelId}`);
+      return newAvatarURL;
+
+    } catch (error) {
+      console.error('Error refreshing channel avatar:', error);
+      throw new Error(`Failed to refresh avatar: ${error.message}`);
+    }
   }
 
   let lastStatusMessage = ""; // Variable to track the last status message
