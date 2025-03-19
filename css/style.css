@@ -3,38 +3,21 @@
   justify-content: center;
   align-items: center;
   background-color: #202020;
-  color: rgba(70, 54, 54, 0);
-  text-align: center;
+  color: #ffffff;
   font-size: 18px;
   font-family: "Roboto", "Arial", sans-serif;
   font-weight: bold;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 100%;
   margin: 0;
-  margin-top: 0;
-  padding: 10px;
-  border-radius: 5px;
+  padding: 3px;
   position: sticky;
   top: 0;
-  z-index: 1000; /* Ensures it's above other elements */
+  z-index: 1000;
   box-sizing: border-box;
 }
 
 /* Add a light gray border below the header */
-.header::after {
-  content: "";
-  display: block;
-  width: 100%;
-  height: 1px;
-  background-color: #404040; /* Use the same light gray border color */
-  margin-top: 10px;
-}
-.header {
-  width: calc(100% - 3px); /* Subtract scrollbar width */
-  position: relative; /* Changed to relative for proper border positioning */
-}
-
-/* Modified border styling */
 .header::after {
   content: "";
   position: absolute;
@@ -45,12 +28,20 @@
   background-color: #404040;
 }
 
+#headerTitle {
+  font-size: 18px;
+  font-family: "Roboto", "Arial", sans-serif;
+  font-weight: bold;
+  color: #202020;
+  margin-left: 10px;
+}
+
 /* General body styling for consistency */
 body {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center children horizontally */
-  justify-content: flex-start; /* Align children from the top */
+  align-items: center;
+  justify-content: flex-start;
   height: 100vh;
   margin: 0;
   padding: 0;
@@ -62,19 +53,19 @@ body {
 }
 
 #channel-list {
-  overflow-y: auto; /* Enables scrolling if content exceeds max-height */
-  padding: 10px;
+  max-height: calc(556px - 1px);
+  overflow-y: auto;
+  min-height: 200px;
   margin-top: 10px;
-  max-height: 503px !important; /* Example max-height, adjust as needed */
-  height: auto; /* Allows dynamic height adjustment */
+  height: auto;
 }
 
 /* Base styles for channel info */
 .channel-info {
   display: grid;
-  grid-template-columns: 30px minmax(200px, 1fr) 40px; /* logo, channel name, live status */
+  grid-template-columns: 30px minmax(200px, 1fr) 70px; /* Increase last column width */
   align-items: center;
-  gap: 10px;
+  gap: 5px;
   margin-bottom: 5px;
   margin-top: 2px;
   font-size: 14px;
@@ -86,27 +77,24 @@ body {
 
 /* Faded effect for not-live channels */
 .channel-info.not-live {
+  opacity: 0.3;
   transition: opacity 0.3s ease;
-  opacity: 0.3; /* Apply reduced opacity */
-  transition: opacity 0.3s ease; /* Smooth transition for the opacity change */
 }
 
 .channel-info.not-live:hover {
-  opacity: 1; /* Full opacity on hover */
+  opacity: 1;
 }
 
 /* Restore full opacity on hover for any channel */
 .channel-info:hover {
+  opacity: 1;
+  background-color: #272727;
   transition: opacity 0.9s ease;
-  opacity: 1; /* Full opacity on hover */
-  background-color: #272727; /* Change to the desired background color */
 }
 
-/* Additional styles */
-
 .channel-logo {
-  width: 30px; /* Fixed width for the logo */
-  height: 30px; /* Adjust height as needed */
+  width: 30px;
+  height: 30px;
   border-radius: 20px;
   flex-shrink: 0;
 }
@@ -116,7 +104,7 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 15px;
-  flex-grow: 1; /* Allows the channel name to grow and use available space */
+  flex-grow: 1;
 }
 
 .channel-logo,
@@ -125,21 +113,22 @@ body {
 }
 
 .live-status {
-  width: 50px; /* Fixed width for the live status */
+  width: 50px; /* Increase width to accommodate "Not Live" on one line */
   color: #555;
-  text-align: right; /* Align live status text to the right */
+  text-align: right;
   flex-shrink: 0;
+  padding-right: 10px;
+  white-space: nowrap; /* Prevent text from wrapping */
 }
 
 .live-status.live {
   color: green;
 }
 
-/* Hover styles for the entire channel info */
 .channel-info:hover {
-  background-color: #272727; /* Change to the desired background color */
-  cursor: pointer; /* Change to the desired cursor style */
-  opacity: 1; /* Ensure full opacity on hover */
+  background-color: #272727;
+  cursor: pointer;
+  opacity: 1;
 }
 
 .channel-logo,
@@ -155,41 +144,33 @@ div {
   padding: 0;
 }
 
-/* Styling for the search section */
-#searchSection {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  max-width: 400px;
-  padding: 10px;
-  box-sizing: border-box;
-  margin-top: 0px; /* Add some space between header and search section */
-}
-
-/* Styling for the new search container */
+/* New header search styling */
 .searchContainer {
   display: flex;
   align-items: center;
-  margin-left: auto; /* These margins push the container to the center */
-  margin-right: auto;
   border: 1px solid #303030;
   border-radius: 22px;
-  background-color: #261f20; /* Background color for the entire search area */
+  background-color: #261f20;
+  flex-grow: 1;
+  margin: 0 10px;
+  max-width: 280px; /* Adjusted width to accommodate back button */
 }
 
-/* Styling for the search input */
+.searchContainer:focus-within {
+  background-color: #1f1e1e !important;
+}
+
 #searchInput {
   font-family: "Roboto", "Arial", sans-serif;
-  flex-grow: 1; /* Allow the input to grow */
-  padding: 20px 15px; /* Adjust padding */
-  border: none; /* Remove individual border */
+  flex-grow: 1;
+  padding: 8px 15px;
+  border: none;
   background-color: #261f20c7 !important;
   color: white;
-  border-top-left-radius: 22px; /* Add border radius to the top-left corner */
-  border-bottom-left-radius: 22px; /* Add border radius to the bottom-left corner */
-  font-size: 11.4px;
+  border-top-left-radius: 22px;
+  border-bottom-left-radius: 22px;
+  font-size: 10.1px;
+  width: 100%;
 }
 
 #searchInput:focus {
@@ -197,10 +178,9 @@ div {
   outline: none;
 }
 
-/* Styling for the search button */
 #searchButton {
   position: relative;
-  padding: 10px; /* Adjust the padding to ensure button size */
+  padding: 8px;
   background-color: rgba(62, 54, 55, 0.439);
   border: none;
   cursor: pointer;
@@ -209,141 +189,143 @@ div {
   justify-content: center;
   border-top-right-radius: 22px;
   border-bottom-right-radius: 22px;
-  transition: background-color 0.3s; /* Smooth transition for hover effect */
+  transition: background-color 0.3s;
 }
 
 #searchButton:hover {
-  background-color: rgba(
-    193,
-    36,
-    22,
-    0.475
-  ); /* Change background color on hover */
+  background-color: rgba(193, 36, 22, 0.475);
 }
 
 #searchButton img {
-  max-width: 35px; /* Set the desired width of the image */
-  max-height: auto; /* Set the desired height of the image */
-  height: auto; /* Maintain aspect ratio */
-  width: auto; /* Maintain aspect ratio */
+  max-width: 25px;
+  max-height: auto;
+  height: auto;
+  width: auto;
+}
+
+/* Original search section styling (modified) */
+#searchSection {
+  display: none;
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 .no-results-message,
 .error-message {
-  color: #ffffff; /* White color for better visibility */
-  background-color: #cc0000; /* YouTube-like red background */
+  color: #ffffff;
+  background-color: #cc0000;
   padding: 10px 20px;
   margin-top: 15px;
-  border-radius: 4px; /* Rounded corners */
+  border-radius: 4px;
   text-align: center;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
   font-family: "Roboto", "Arial", sans-serif;
   font-size: 14px;
 }
 
 .no-results-message {
-  color: #ffffff; /* White color for better visibility */
-  background-color: #cc0000; /* YouTube-like red background */
+  color: #ffffff;
+  background-color: #cc0000;
   padding: 10px 20px;
   margin-top: 15px;
-  border-radius: 4px; /* Rounded corners */
+  border-radius: 4px;
   text-align: center;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
   font-family: "Roboto", "Arial", sans-serif;
   font-size: 13px;
 }
 
 .search-examples {
   margin-top: 10px;
-  text-align: left; /* Left align the examples for clarity */
-  color: #dddddd; /* Lighter color for the examples */
+  text-align: left;
+  color: #dddddd;
 }
 
 .search-examples .example {
-  color: #ffcc00; /* A distinct color for example text */
-  font-weight: bold; /* Make the example text bold */
+  color: #ffcc00;
+  font-weight: bold;
 }
 
 #showSearch {
-  background-color: transparent; /* Makes the button background transparent */
+  position: absolute;
+  right: 10px;
+  background-color: transparent;
   border: none;
   cursor: pointer;
-  position: absolute;
-  top: 4px;
-  right: 10px;
-  width: 40px; /* Adjust to the size of your image */
+  width: 40px;
   height: auto;
   padding: 0;
   transition: background-color 0.3s ease;
 }
 
 #showSearch:hover img {
-  opacity: 0.8; /* Example of changing the opacity */
-  filter: brightness(220%); /* Example of making the image brighter */
+  opacity: 0.8;
+  filter: brightness(220%);
 }
 
 #backButton:hover img {
-  opacity: 0.2; /* Example of changing the opacity */
-  filter: brightness(220%); /* Example of making the image brighter */
+  opacity: 0.2;
+  filter: brightness(220%);
 }
 
 #showSearch img {
-  display: block; /* Ensures the image fills the button */
-  width: 100%; /* Full width of the button */
-  height: 100%; /* Full height of the button */
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 #backButton {
-  border: none;
-  padding: 0; /* Remove padding to fit the image correctly */
-  cursor: pointer;
   position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 1010;
-  width: 40px; /* Adjust to the size of your image */
-  height: 40px; /* Adjust to the size of your image */
-  background-color: transparent; /* Optional, for a transparent background */
+  left: 3px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: 30px;
+  height: 25px;
+  background-color: transparent;
   transition: background-color 0.3s ease;
+  display: none; /* Hidden by default */
 }
 
 #backButton img {
-  display: block; /* Ensures the image fills the button */
-  width: 100%; /* Full width of the button */
-  height: 100%; /* Full height of the button */
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+#backButton:hover img {
+  opacity: 0.8;
+  filter: brightness(170%);
 }
 
 /* Styling for each search result item */
 .search-result-item {
   display: grid;
-  grid-template-columns: 80px minmax(0, 1fr) auto; /* logo, channel info, add button */
-  grid-gap: 15px; /* Adjust the gap between grid columns */
-  align-items: center; /* Align items vertically in the center */
+  grid-template-columns: 80px minmax(0, 1fr) auto;
+  grid-gap: 15px;
+  align-items: center;
   padding: 10px;
   border-bottom: 1px solid #303030;
 }
-/* Styling for the channel logo */
+
 .search-result-channel-logo {
   width: 80px;
   height: 80px;
   border-radius: 40px;
-  /* No margin-right needed, as grid takes care of spacing */
 }
 
-/* Container for channel info (name and description) */
 .info-container {
   display: flex;
   flex-direction: column;
-  /* No need for flex-grow or margin-right */
 }
 
-/* Styling for the channel title */
 .channel-title {
   font-size: 1.2em;
   margin-bottom: 5px;
 }
 
-/* Styling for the channel description */
 .channel-description {
   font-size: 0.9em;
   color: #666;
@@ -352,55 +334,53 @@ div {
   text-overflow: ellipsis;
 }
 
-/* Styling for the add channel button */
 .add-channel-button {
-  padding: 5px 10px; /* Adjust padding as needed */
-  background-color: #4caf50; /* Example color */
-  color: white; /* Text color */
+  background-color: #2ba640; /* YouTube-style green */
+  color: white;
   border: none;
-  border-radius: 5px; /* Rounded corners */
+  border-radius: 50%; /* Makes it circular */
+  width: 36px;
+  height: 36px;
+  font-size: 24px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: background-color 0.3s; /* Smooth transition for hover effect */
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .add-channel-button:hover {
-  background-color: #45a049; /* Darker shade on hover */
+  background-color: #34c74f; /* Brighter green on hover */
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* AddChannelText Styling for Dark Theme */
-#addChannelText {
-  font-size: 18px; /* Adjust the font size as needed */
-  text-align: center !important; /* Center align the text */
-  margin-top: 20px; /* Add some top margin for spacing */
-  color: #ffffffb7; /* White text color for dark theme */
+.add-channel-button:active {
+  transform: scale(0.95);
+  background-color: #228934; /* Darker when clicked */
 }
 
-/* Apply a subtle shadow to the text for depth */
 #addChannelText {
+  font-size: 18px;
+  text-align: center !important;
+  margin-top: 20px;
+  color: #ffffffb7;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  background-color: #20202024;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Add a dark background color */
-#addChannelText {
-  background-color: #20202024; /* Dark background color */
-  padding: 10px; /* Add padding for better visual separation */
-  border-radius: 5px; /* Rounded corners */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
-}
-
-/* Style the text like a YouTube header */
-#addChannelText::before {
-  content: "";
-}
-
-/* Add a light gray border below the text */
 #addChannelText::after {
   content: "";
   display: block;
   width: 100%;
   height: 1px;
-  background-color: #404040; /* Light gray border color for dark theme */
-  margin-top: 10px; /* Space between text and border */
+  background-color: #404040;
+  margin-top: 10px;
 }
 
 #statusMessage {
@@ -410,7 +390,7 @@ div {
   padding: 10px;
   border-radius: 4px;
   margin-top: 10px;
-  min-height: 30px; /* Increase the minimum height */
+  min-height: 30px;
   width: 95%;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
   word-wrap: break-word;
@@ -418,20 +398,19 @@ div {
   max-height: 150px;
 }
 
-/* Hide the status message when it's empty */
 #statusMessage:empty {
   display: none;
 }
 
 #customContextMenu {
   background-color: #282828 !important;
-  color: #fff; /* Light text color for contrast */
-  border: 1px solid #303030; /* Dark border color */
+  color: #fff;
+  border: 1px solid #303030;
   border-radius: 5px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Shadow for depth */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
   padding: 10px;
-  font-family: "Roboto", "Arial", sans-serif; /* YouTube-like font */
-  font-size: 14px; /* Appropriate font size */
+  font-family: "Roboto", "Arial", sans-serif;
+  font-size: 14px;
 }
 
 #customContextMenu ul {
@@ -443,26 +422,26 @@ div {
 #customContextMenu li {
   padding: 8px 12px;
   cursor: pointer;
-  border-radius: 4px; /* Rounded corners for each item */
-  transition: background-color 0.2s; /* Smooth transition for hover effect */
+  border-radius: 4px;
+  transition: background-color 0.2s;
 }
 
 #customContextMenu li:hover {
-  background-color: #383838; /* Slightly lighter shade for hover */
+  background-color: #383838;
 }
 
 .login-required-message {
   font-family: "Roboto", "Arial", sans-serif;
   color: red;
-  font-size: 18px; /* Adjust as needed */
-  font-weight: bold; /* Make it bold */
-  margin: 10px 0; /* Add some spacing */
-  text-align: center; /* Center the text */
+  font-size: 18px;
+  font-weight: bold;
+  margin: 10px 0;
+  text-align: center;
 }
 
 .login-required-instruction {
   font-family: "Roboto", "Arial", sans-serif;
-  margin: 10px 0; /* Add some spacing for other paragraphs */
+  margin: 10px 0;
   font-size: 15px;
   text-align: center;
 }
@@ -476,22 +455,21 @@ div {
 }
 
 /* Custom Scrollbar Styles for the channel-list container */
-/* For Webkit browsers like Chrome, Safari */
 #channel-list::-webkit-scrollbar {
-  width: 3px; /* Width of the scrollbar */
+  width: 3px;
 }
 
 #channel-list::-webkit-scrollbar-track {
-  background-color: #000000; /* Light gray track */
+  background-color: #000000;
 }
 
 #channel-list::-webkit-scrollbar-thumb {
-  background-color: #843d34; /* Custom thumb color */
-  border-radius: 5px; /* Rounded corners for the thumb */
+  background-color: #843d34;
+  border-radius: 5px;
 }
 
 #channel-list::-webkit-scrollbar-thumb:hover {
-  background-color: #cc4531; /* Darker color on hover */
+  background-color: #cc4531;
 }
 
 #channel-list {
@@ -499,28 +477,100 @@ div {
   overflow-y: auto;
 }
 
-/* Increase height for high-resolution screens */
-@media screen and (min-width: 1920px) {
-  #channel-list {
-    max-height: 90vh; /* Adjust as needed for larger screens */
-    /* ... other styles ... */
+/* Search tips styling */
+.search-tips-container {
+  margin-top: 15px;
+  text-align: left;
+  padding: 10px;
+  background-color: #2a2a2a;
+  border-radius: 5px;
+  font-family: "Roboto", "Arial", sans-serif;
+  width: 94%;
+}
+
+.search-tips-title {
+  margin: 0 0 8px 0;
+  font-size: 13px;
+  color: #ffffff;
+  font-family: "Roboto", "Arial", sans-serif;
+}
+
+.search-tips-list {
+  padding-left: 20px;
+  margin: 0;
+}
+
+.search-tips-item {
+  font-size: 12px;
+  color: #cccccc;
+  margin-bottom: 5px;
+  font-family: "Roboto", "Arial", sans-serif;
+}
+
+.notification-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  font-family: "Roboto", "Arial", sans-serif;
+  text-align: center;
+  max-width: 80%;
+  min-width: 250px;
+  opacity: 1;
+  transition: opacity 0.3s;
+  font-size: 15px;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.notification-success {
+  background-color: #1b5e20; /* Darker green */
+  color: #ffffff;
+}
+
+.notification-error {
+  background-color: #b71c1c; /* Darker red */
+  color: #ffffff;
+}
+
+.notification-info {
+  background-color: #0d47a1; /* Darker blue */
+  color: #ffffff;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
   }
 }
 
-/* Styles for the entire popup window's scrollbar */
+@media screen and (min-width: 1920px) {
+  #channel-list {
+    max-height: 90vh;
+  }
+}
+
 body::-webkit-scrollbar {
-  width: 5px; /* Width of the scrollbar */
+  width: 5px;
 }
 
 body::-webkit-scrollbar-track {
-  background-color: #f1efef; /* Light gray track */
+  background-color: #f1efef;
 }
 
 body::-webkit-scrollbar-thumb {
-  background-color: rgba(151, 27, 27, 0.638); /* Custom thumb color */
-  border-radius: 5px; /* Rounded corners for the thumb */
+  background-color: rgba(151, 27, 27, 0.638);
+  border-radius: 5px;
 }
 
 body::-webkit-scrollbar-thumb:hover {
-  background-color: #843d34; /* Darker color on hover */
+  background-color: #843d34;
 }

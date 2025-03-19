@@ -52,7 +52,6 @@ function checkAllChannels(fromPopup = false) {
     );
 
     // After all channels are checked
-    // After all channels are checked
     Promise.all(checkPromises).then(() => {
       console.log("Live status of all channels:", liveChannels);
       chrome.storage.local.set({ liveChannels });

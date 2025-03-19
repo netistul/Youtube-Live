@@ -6,7 +6,21 @@
   </head>
   <body>
     <div class="header">
-      YouTube Live
+      <button id="backButton" style="display: none">
+        <img src="css/back.svg" alt="Back" />
+      </button>
+      <span id="headerTitle">YouTube Live</span>
+      <div class="searchContainer" style="display: none">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="YT channel name, channel link or video link"
+          autocomplete="off"
+        />
+        <button id="searchButton">
+          <img src="css/searchicon.svg" alt="Search" />
+        </button>
+      </div>
       <button id="showSearch">
         <img src="css/add.svg" alt="Add" />
       </button>
@@ -32,23 +46,22 @@
       </ul>
     </div>
     <div id="searchSection" style="display: none">
-      <button id="backButton">
-        <img src="css/back.svg" alt="Back" />
-      </button>
-      <div class="searchContainer">
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="YouTube channel name, channel link or video link"
-          autocomplete="off"
-        />
-        <button id="searchButton">
-          <img src="css/searchicon.svg" alt="Search" />
-        </button>
-      </div>
       <div id="searchResults">
         <div id="addChannelText">
           Type below to add a YouTube channel to your list
+          <div class="search-tips-container">
+            <p class="search-tips-title">
+              If you are not finding the desired channel, try entering:
+            </p>
+            <ul class="search-tips-list">
+              <li class="search-tips-item">
+                a YouTube video URL from that channel
+              </li>
+              <li class="search-tips-item">
+                the channel's complete profile URL
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>

@@ -1,8 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const statusDiv = document.getElementById("status");
-  const searchSection = document.getElementById("searchSection");
   const showSearchButton = document.getElementById("showSearch");
   const backButton = document.getElementById("backButton");
+  const searchSection = document.getElementById("searchSection");
+  const statusDiv = document.getElementById("status");
+  const searchContainer = document.querySelector(".searchContainer");
+  const headerTitle = document.getElementById("headerTitle");
 
   // Function to refresh the live channels list
   function refreshLiveChannels() {
@@ -97,12 +99,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Check if no channels were added and display the message
         if (storedChannels.length === 0) {
+          const noChannelContainer = document.createElement("div");
+          noChannelContainer.style.display = "flex";
+          noChannelContainer.style.flexDirection = "column";
+          noChannelContainer.style.alignItems = "center";
+          noChannelContainer.style.marginTop = "20px";
+
+          const addInstructionMsg = document.createElement("p");
+          addInstructionMsg.textContent = "Click the + button in the top right corner to add channels";
+          addInstructionMsg.style.fontFamily = "Roboto, sans-serif";
+          addInstructionMsg.style.fontSize = "14px";
+          addInstructionMsg.style.color = "#cc4531";
+          addInstructionMsg.style.marginBottom = "10px";
+          addInstructionMsg.style.textAlign = "center";
+
           const noChannelMsg = document.createElement("p");
           noChannelMsg.textContent = "No YouTube channels added yet.";
           noChannelMsg.style.fontFamily = "Roboto, sans-serif";
           noChannelMsg.style.fontSize = "17px";
           noChannelMsg.style.color = "grey";
-          statusDiv.appendChild(noChannelMsg);
+          noChannelMsg.style.marginTop = "5px";
+
+          noChannelContainer.appendChild(addInstructionMsg);
+          noChannelContainer.appendChild(noChannelMsg);
+
+          statusDiv.appendChild(noChannelContainer);
         }
 
         function showContextMenu(x, y, channelId) {
@@ -183,18 +204,24 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Show search section, hide live channels list and the showSearch button
+  // Show search container in header, hide live channels list and title
   showSearchButton.addEventListener("click", function () {
     statusDiv.style.display = "none";
     searchSection.style.display = "block";
     showSearchButton.style.display = "none"; // Hide the showSearch button
+    searchContainer.style.display = "flex"; // Show search container in header
+    headerTitle.style.display = "none"; // Hide the "YouTube Live" title
+    backButton.style.display = "block"; // Show the back button in header
   });
 
-  // Back to live channels list and show the showSearch button again
+  // Back to live channels list, hide search container, show title
   backButton.addEventListener("click", function () {
     searchSection.style.display = "none";
     statusDiv.style.display = "block";
     showSearchButton.style.display = "block"; // Show the showSearch button
+    searchContainer.style.display = "none"; // Hide search container in header
+    headerTitle.style.display = "block"; // Show the "YouTube Live" title
+    backButton.style.display = "none"; // Hide the back button
   });
 
   const searchInput = document.getElementById("searchInput");
@@ -498,33 +525,47 @@ document.addEventListener("DOMContentLoaded", function () {
     HIGH: 2
   };
 
+  // Updated updateStatusMessage function to use a notification popup
   function updateStatusMessage(message, priority = PRIORITY.LOW, duration = 0) {
-    let statusDiv = document.getElementById("statusMessage");
-
-    if (!statusDiv) {
-      statusDiv = document.createElement("div");
-      statusDiv.id = "statusMessage";
-      statusDiv.style = "color: grey; margin-bottom: 10px;";
-
-      const spinner = document.getElementById("loadingSpinner");
-      if (spinner) {
-        spinner.parentNode.insertBefore(statusDiv, spinner.nextSibling);
-      } else {
-        document.body.insertBefore(statusDiv, document.body.firstChild);
-      }
-    }
-
     // Only update if the new message has higher or equal priority
     if (priority >= currentMessagePriority) {
-      statusDiv.innerHTML = message;
       currentMessagePriority = priority;
+
+      // Remove any existing notifications
+      const existingNotification = document.querySelector('.notification-popup');
+      if (existingNotification) {
+        existingNotification.remove();
+      }
+
+      if (!message) return; // If empty message, just remove existing notification
+
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.className = 'notification-popup';
+
+      // Set notification style based on priority
+      if (priority === PRIORITY.HIGH) {
+        notification.classList.add('notification-error');
+      } else if (priority === PRIORITY.MEDIUM) {
+        notification.classList.add('notification-success');
+      } else {
+        notification.classList.add('notification-info');
+      }
+
+      notification.innerHTML = message;
+
+      // Add to document
+      document.body.appendChild(notification);
 
       // Clear the message after the specified duration
       if (duration > 0) {
         setTimeout(() => {
           if (currentMessagePriority === priority) {
-            statusDiv.innerHTML = "";
-            currentMessagePriority = 0;
+            notification.style.opacity = '0';
+            setTimeout(() => {
+              notification.remove();
+              currentMessagePriority = 0;
+            }, 300); // Allow time for fade out animation
           }
         }, duration * 1000);
       }
@@ -649,6 +690,11 @@ document.addEventListener("DOMContentLoaded", function () {
         searchSection.style.display = "none";
         statusDiv.style.display = "block";
         showSearchButton.style.display = "block";
+
+        // Hide search container and show header title
+        searchContainer.style.display = "none";
+        headerTitle.style.display = "block";
+        backButton.style.display = "none";
 
         // Send a message to background.js to check all channels after a delay
         setTimeout(() => {
