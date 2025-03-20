@@ -137,32 +137,82 @@ document.addEventListener("DOMContentLoaded", function () {
           statusDiv.innerHTML = ""; // Clear the status div
           statusDiv.appendChild(noChannelContainer);
         }
-
         function showContextMenu(x, y, channelId) {
-          const contextMenu = document.getElementById("customContextMenu");
-          const menuWidth = contextMenu.offsetWidth;
-          const menuHeight = contextMenu.offsetHeight;
-          const windowWidth = window.innerWidth;
-          const windowHeight = window.innerHeight;
+          // First get the channel name and logo from storage
+          chrome.storage.local.get(["yt_live_channels_id"], function (result) {
+            const channels = result.yt_live_channels_id || [];
+            const channelData = channels.find(channel => channel[0] === channelId);
 
-          // Adjust if the menu goes off the right side of the window
-          if (x + menuWidth > windowWidth) {
-            x = windowWidth - menuWidth;
-          }
+            if (!channelData) {
+              console.error("Channel not found:", channelId);
+              return;
+            }
 
-          // Adjust if the menu goes off the bottom of the window
-          if (y + menuHeight > windowHeight) {
-            y = windowHeight - menuHeight;
-          }
+            const channelName = channelData[1];
+            const logoUrl = channelData[2];
 
-          contextMenu.style.top = y + "px";
-          contextMenu.style.left = x + "px";
-          contextMenu.style.display = "block";
+            const contextMenu = document.getElementById("customContextMenu");
 
-          const deleteOption = document.getElementById("deleteChannel");
-          deleteOption.onclick = function () {
-            deleteChannel(channelId);
-          };
+            // Clear existing menu items
+            const menuList = contextMenu.querySelector("ul");
+            menuList.innerHTML = "";
+
+            // Create the delete option with logo and channel name
+            const deleteOption = document.createElement("li");
+            deleteOption.id = "deleteChannel";
+            deleteOption.className = "macos-delete-button";
+
+            // Create logo element
+            const logo = document.createElement("img");
+            logo.src = logoUrl;
+            logo.alt = `${channelName} Logo`;
+            logo.className = "context-menu-logo";
+
+            // Create text span with specific styling for vertical alignment
+            const textSpan = document.createElement("span");
+            textSpan.textContent = `Delete channel ${channelName}`;
+            textSpan.style.display = "inline-flex";  // Ensures inline flex for text
+            textSpan.style.alignItems = "center";    // Center items vertically
+            textSpan.style.height = "16px";          // Match logo height
+
+            // Add logo and text directly to the delete option
+            deleteOption.appendChild(logo);
+            deleteOption.appendChild(textSpan);
+
+            // Add to menu
+            menuList.appendChild(deleteOption);
+
+            // Make the menu visible first to get accurate dimensions
+            contextMenu.style.display = "block";
+
+            const menuWidth = contextMenu.offsetWidth;
+            const menuHeight = contextMenu.offsetHeight;
+
+            // Use document.body dimensions for more reliable popup size measurement
+            const popupWidth = document.body.clientWidth;
+            const popupHeight = document.body.clientHeight;
+
+            // Adjust if the menu goes off the right side of the popup
+            if (x + menuWidth > popupWidth) {
+              x = popupWidth - menuWidth - 5; // 5px buffer
+            }
+
+            // Adjust if the menu goes off the bottom of the popup
+            if (y + menuHeight > popupHeight) {
+              y = popupHeight - menuHeight - 5; // 5px buffer
+            }
+
+            // Ensure x and y are not negative
+            x = Math.max(0, x);
+            y = Math.max(0, y);
+
+            contextMenu.style.top = y + "px";
+            contextMenu.style.left = x + "px";
+
+            deleteOption.onclick = function () {
+              deleteChannel(channelId);
+            };
+          });
         }
         setTimeout(updateScrollbarClass, 100);
       }
