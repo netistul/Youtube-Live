@@ -267,6 +267,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Clear existing search results when a new search starts
     const searchResults = document.getElementById("searchResults");
     searchResults.innerHTML = "";
+    // Clear any existing notifications when user attempts a new search
+    updateStatusMessage("");
+    currentMessagePriority = PRIORITY.LOW;
     let endpoint;
     const maxResults = 15; // Set the number of results per page
 
