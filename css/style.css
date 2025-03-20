@@ -233,8 +233,7 @@ div {
   box-sizing: border-box;
 }
 
-.no-results-message,
-.error-message {
+.no-results-message {
   color: #ffffff;
   background-color: #cc0000;
   padding: 10px 20px;

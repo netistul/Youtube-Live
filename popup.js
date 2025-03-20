@@ -219,6 +219,14 @@ document.addEventListener("DOMContentLoaded", function () {
     searchContainer.style.display = "none"; // Hide search container in header
     headerTitle.style.display = "block"; // Show the "YouTube Live" title
     backButton.style.display = "none"; // Hide the back button
+    // Clear any existing notifications - more direct approach
+    const existingNotifications = document.querySelectorAll('.notification-popup');
+    existingNotifications.forEach(notification => {
+      notification.remove();
+    });
+
+    // Reset priority
+    currentMessagePriority = PRIORITY.LOW;
   });
 
   const searchInput = document.getElementById("searchInput");
