@@ -9,17 +9,26 @@ document.addEventListener("DOMContentLoaded", function () {
   // Function to refresh the live channels list
   function refreshLiveChannels() {
     chrome.storage.local.get(
-      ["liveChannels", "yt_live_channels_id"],
+      ["liveChannels", "yt_live_channels_id", "channelAccessCount"],
       function (result) {
         const liveChannels = result.liveChannels || {};
         const storedChannels = result.yt_live_channels_id || [];
+        const accessCounts = result.channelAccessCount || {};
 
-        // Sort channels based on live status
+        // Sort channels based on: 1. live status (live first), 2. access count
         storedChannels.sort((a, b) => {
-          const isLiveA = liveChannels[a[1]];
-          const isLiveB = liveChannels[b[1]];
-          // Sort in descending order so that "Live" comes before "Not Live"
-          return isLiveB - isLiveA;
+          const isLiveA = liveChannels[a[1]] ? 1 : 0;
+          const isLiveB = liveChannels[b[1]] ? 1 : 0;
+
+          // First sort by live status (live channels on top)
+          if (isLiveA !== isLiveB) {
+            return isLiveB - isLiveA;
+          }
+
+          // If live status is the same, sort by access count (descending)
+          const accessCountA = accessCounts[a[0]] || 0;
+          const accessCountB = accessCounts[b[0]] || 0;
+          return accessCountB - accessCountA;
         });
 
         statusDiv.innerHTML = "<div id='channel-list'></div>"; // Create a new container for channels
@@ -48,8 +57,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.error('Error refreshing avatar:', error);
               });
           };
+
+          // Add access count tracker to click event
           channelDiv.style.cursor = "pointer"; // Change cursor to pointer on hover
           channelDiv.addEventListener("click", function () {
+            // Increment access count for this channel
+            incrementChannelAccessCount(channelId);
+
+            // Open the channel's live page
             chrome.tabs.create({
               url: `https://www.youtube.com/channel/${channelId}/live`,
             });
@@ -154,13 +169,36 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   }
 
+  // Function to increment channel access count
+  function incrementChannelAccessCount(channelId) {
+    chrome.storage.local.get(["channelAccessCount"], function (result) {
+      const accessCounts = result.channelAccessCount || {};
+
+      // Increment count or initialize to 1
+      accessCounts[channelId] = (accessCounts[channelId] || 0) + 1;
+
+      // Save updated counts back to storage
+      chrome.storage.local.set({ channelAccessCount: accessCounts }, function () {
+        console.log(`Access count for channel ${channelId} incremented to ${accessCounts[channelId]}`);
+        // No need to refresh here as the user is leaving the popup
+      });
+    });
+  }
 
   function deleteChannel(channelId) {
     // Access local storage and remove the channel
-    chrome.storage.local.get(["yt_live_channels_id"], function (result) {
+    chrome.storage.local.get(["yt_live_channels_id", "channelAccessCount"], function (result) {
       let channels = result.yt_live_channels_id || [];
       channels = channels.filter((channel) => channel[0] !== channelId);
-      chrome.storage.local.set({ yt_live_channels_id: channels }, function () {
+
+      // Also remove access count for this channel
+      const accessCounts = result.channelAccessCount || {};
+      delete accessCounts[channelId];
+
+      chrome.storage.local.set({
+        yt_live_channels_id: channels,
+        channelAccessCount: accessCounts
+      }, function () {
         console.log(`Channel ${channelId} deleted.`);
         // Refresh the list or take any other necessary action
         refreshLiveChannels();
