@@ -1,6 +1,7 @@
 .header {
+  width: 100%;
+  position: relative;
   display: flex;
-  justify-content: center;
   align-items: center;
   background-color: #202020;
   color: #ffffff;
@@ -8,13 +9,13 @@
   font-family: "Roboto", "Arial", sans-serif;
   font-weight: bold;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 100%;
   margin: 0;
   padding: 3px;
   position: sticky;
   top: 0;
   z-index: 1000;
   box-sizing: border-box;
+  min-height: 48px;
 }
 
 /* Add a light gray border below the header */
@@ -34,6 +35,7 @@
   font-weight: bold;
   color: #202020;
   margin-left: 10px;
+  transition: margin 0.3s ease; /* Add transition for smooth movement */
 }
 
 /* General body styling for consistency */
@@ -53,7 +55,7 @@ body {
 }
 
 #channel-list {
-  max-height: calc(556px - 1px);
+  max-height: calc(543px - 1px) !important;
   overflow-y: auto;
   min-height: 200px;
   margin-top: 10px;
@@ -151,13 +153,19 @@ div {
   border: 1px solid #303030;
   border-radius: 22px;
   background-color: #261f20;
-  flex-grow: 1;
   margin: 0 10px;
-  max-width: 280px; /* Adjusted width to accommodate back button */
+  width: 280px; /* Initial width */
+  transform: translateZ(0); /* Hardware acceleration */
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* Optimize timing */
 }
 
+/* Make it expand when focused */
 .searchContainer:focus-within {
   background-color: #1f1e1e !important;
+  width: calc(
+    100% - 10px
+  ); /* Expand almost to full width minus space for buttons */
+  max-width: calc(100% - 10px);
 }
 
 #searchInput {
@@ -169,13 +177,26 @@ div {
   color: white;
   border-top-left-radius: 22px;
   border-bottom-left-radius: 22px;
-  font-size: 10.1px;
+  font-size: 11.1px;
   width: 100%;
 }
 
 #searchInput:focus {
   background-color: #1f1e1e !important;
   outline: none;
+}
+
+/* Position the show search button */
+#showSearch {
+  position: absolute;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  width: 40px;
+  height: auto;
+  padding: 0;
+  z-index: 2; /* Ensure it's above other elements */
 }
 
 #searchButton {
@@ -277,16 +298,18 @@ div {
 }
 
 #backButton {
-  position: absolute;
-  left: 3px;
+  position: relative; /* Changed from absolute */
+  left: auto;
+  top: auto;
   border: none;
   padding: 0;
   cursor: pointer;
   width: 30px;
-  height: 25px;
+  height: 30px;
+  margin-right: 5px; /* Add some space */
   background-color: transparent;
-  transition: background-color 0.3s ease;
-  display: none; /* Hidden by default */
+  flex-shrink: 0; /* Prevent shrinking */
+  z-index: 2;
 }
 
 #backButton img {
@@ -360,27 +383,6 @@ div {
 .add-channel-button:active {
   transform: scale(0.95);
   background-color: #228934; /* Darker when clicked */
-}
-
-#addChannelText {
-  font-size: 18px;
-  text-align: center !important;
-  margin-top: 20px;
-  color: #ffffffb7;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-  background-color: #20202024;
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-#addChannelText::after {
-  content: "";
-  display: block;
-  width: 100%;
-  height: 1px;
-  background-color: #404040;
-  margin-top: 10px;
 }
 
 #statusMessage {
@@ -540,6 +542,106 @@ div {
 .notification-info {
   background-color: #0d47a1; /* Darker blue */
   color: #ffffff;
+}
+
+/* Empty state styling */
+.empty-state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  width: 100%;
+  text-align: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.empty-state-icon {
+  margin-bottom: 20px;
+  color: #404040;
+  opacity: 0.8;
+}
+
+.empty-state-primary {
+  font-family: "Roboto", "Arial", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #cc4531;
+  margin-bottom: 12px;
+  max-width: 240px;
+}
+
+.empty-state-secondary {
+  font-family: "Roboto", "Arial", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #909090;
+  margin-top: 0;
+  max-width: 220px;
+}
+
+/* Informative Container Styling */
+.informative-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: transparent;
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 20px auto;
+  max-width: 400px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.informative-title {
+  font-family: "Roboto", "Arial", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #cc4531;
+  margin: 0 0 12px 0;
+  text-align: center;
+  max-width: 240px;
+}
+
+.informative-description {
+  font-family: "Roboto", "Arial", sans-serif;
+  font-size: 14px;
+  color: #909090;
+  margin: 8px 0 12px 0;
+  line-height: 1.4;
+}
+
+.informative-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.informative-list-item {
+  font-family: "Roboto", "Arial", sans-serif;
+  font-size: 14px;
+  color: #909090;
+  margin-bottom: 10px;
+  padding-left: 20px;
+  position: relative;
+  line-height: 1.4;
+  text-align: left;
+}
+
+/* Simple square bullet - modified to match empty state */
+.informative-list-item::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 6px;
+  width: 6px;
+  height: 6px;
+  background-color: #404040;
+  opacity: 0.8;
+  transform: rotate(45deg);
 }
 
 @keyframes bounce {

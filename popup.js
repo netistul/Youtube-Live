@@ -100,29 +100,26 @@ document.addEventListener("DOMContentLoaded", function () {
         // Check if no channels were added and display the message
         if (storedChannels.length === 0) {
           const noChannelContainer = document.createElement("div");
-          noChannelContainer.style.display = "flex";
-          noChannelContainer.style.flexDirection = "column";
-          noChannelContainer.style.alignItems = "center";
-          noChannelContainer.style.marginTop = "20px";
+          noChannelContainer.className = "empty-state-container";
+
+          // Add a YouTube icon for visual appeal
+          const icon = document.createElement("div");
+          icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>';
+          icon.className = "empty-state-icon";
 
           const addInstructionMsg = document.createElement("p");
           addInstructionMsg.textContent = "Click the + button in the top right corner to add channels";
-          addInstructionMsg.style.fontFamily = "Roboto, sans-serif";
-          addInstructionMsg.style.fontSize = "14px";
-          addInstructionMsg.style.color = "#cc4531";
-          addInstructionMsg.style.marginBottom = "10px";
-          addInstructionMsg.style.textAlign = "center";
+          addInstructionMsg.className = "empty-state-primary";
 
           const noChannelMsg = document.createElement("p");
           noChannelMsg.textContent = "No YouTube channels added yet.";
-          noChannelMsg.style.fontFamily = "Roboto, sans-serif";
-          noChannelMsg.style.fontSize = "17px";
-          noChannelMsg.style.color = "grey";
-          noChannelMsg.style.marginTop = "5px";
+          noChannelMsg.className = "empty-state-secondary";
 
+          noChannelContainer.appendChild(icon);
           noChannelContainer.appendChild(addInstructionMsg);
           noChannelContainer.appendChild(noChannelMsg);
 
+          statusDiv.innerHTML = ""; // Clear the status div
           statusDiv.appendChild(noChannelContainer);
         }
 
