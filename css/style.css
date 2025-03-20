@@ -54,18 +54,9 @@ body {
   overflow: hidden;
 }
 
-#channel-list {
-  max-height: calc(543px - 1px) !important;
-  overflow-y: auto;
-  min-height: 200px;
-  margin-top: 10px;
-  height: auto;
-}
-
-/* Base styles for channel info */
 .channel-info {
   display: grid;
-  grid-template-columns: 30px minmax(200px, 1fr) 70px; /* Increase last column width */
+  grid-template-columns: 30px minmax(200px, 1fr) 70px;
   align-items: center;
   gap: 5px;
   margin-bottom: 5px;
@@ -77,6 +68,22 @@ body {
   transition: background-color 0.2s, opacity 0.3s ease;
 }
 
+/* Detect scrollbar presence */
+#channel-list {
+  max-height: calc(543px - 1px) !important;
+  overflow-y: auto;
+  min-height: 200px;
+  margin-top: 10px;
+  height: auto;
+  /* Add this to prevent horizontal scrollbar */
+  overflow-x: hidden;
+}
+
+/* Target items only when scrollbar is visible using JS-added class */
+#channel-list.has-scrollbar .channel-info {
+  /* Add margin-right instead of padding to avoid affecting the grid layout */
+  margin-right: 4px;
+}
 /* Faded effect for not-live channels */
 .channel-info.not-live {
   opacity: 0.3;

@@ -149,6 +149,7 @@ document.addEventListener("DOMContentLoaded", function () {
             deleteChannel(channelId);
           };
         }
+        setTimeout(updateScrollbarClass, 100);
       }
     );
   }
@@ -721,4 +722,22 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
   }
+
+  function updateScrollbarClass() {
+    const channelList = document.getElementById('channel-list');
+    if (channelList) {
+      // Compare scrollHeight (total scrollable height) with clientHeight (visible height)
+      // If scrollHeight > clientHeight, there's a scrollbar
+      if (channelList.scrollHeight > channelList.clientHeight) {
+        channelList.classList.add('has-scrollbar');
+      } else {
+        channelList.classList.remove('has-scrollbar');
+      }
+    }
+  }
+  updateScrollbarClass();
+
+  // Set up to check on window resize too
+  window.addEventListener('resize', updateScrollbarClass);
+
 });
