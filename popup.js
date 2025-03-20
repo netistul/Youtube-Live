@@ -392,8 +392,15 @@ document.addEventListener("DOMContentLoaded", function () {
           } else if (error.message.includes("Rate limit exceeded")) {
             startCountdown(60, "Rate limit exceeded. Please try again in", PRIORITY.HIGH, "", "Rate limit expired. You can now try your search again.");
           } else {
-            updateStatusMessage("YouTube API error: " + error.message +
-              ".<br/><br/>Try adding the YouTube channel ID or any video link from that channel directly here; it might work.", PRIORITY.HIGH);
+            updateStatusMessage(`
+              <div class="error-message">
+                YouTube search is currently unavailable.
+                <div class="search-examples">
+                  <b style='color:rgb(241, 243, 246);'>&#x2139;&#xFE0F; Try instead:</b> Paste a video URL from the channel into the search input, for example:
+                  <div class="example">https://www.youtube.com/watch?v=dQw4w9WgXcQ</div>
+                </div>
+              </div>
+            `, PRIORITY.HIGH);
           }
         })
         .finally(() => {
